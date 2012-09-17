@@ -7,7 +7,79 @@
         <title>@title</title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-        <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+        <script>
+        	var GameSocketHandler = function(uri, name)
+        	{
+        		var self = this;
+        		
+        		this.name = name;
+        		this.socket = new WebSocket(uri + "/" + name);
+        		
+        		this.socket.onopen = function(event) { self.onOpen.call(self, event) };
+			    this.socket.onclose = function(event) { self.onClose.call(self, event) };
+			    this.socket.onerror = function(event) { self.onError.call(self, event) };
+			    this.socket.onmessage = function(event) { self.onMessage.call(self, event) };
+        	};
+        	
+        	GameSocketHandler.prototype.onOpen = function(event)
+        	{
+        		console.log("Recieved Open");
+        	};
+        	
+        	GameSocketHandler.prototype.onClose = function(event)
+        	{
+        		console.log("Recieved Close");
+        	};
+        	
+        	GameSocketHandler.prototype.onError = function(event)
+        	{
+        		console.log("Recieved Error");
+        	};
+        	
+        	GameSocketHandler.prototype.doMessage = function(id, action, message)
+        	{
+        		console.log("Sending " + action);
+        		this.socket.send({"Id": id, "Action": action, "Name": this.name, "Message": message});
+        	};
+        	
+        	GameSocketHandler.prototype.onMessage = function(event)
+        	{
+        		var id = event.data.Id;
+        		var action = event.data.Action;
+        		var message = event.data.Message;
+        		
+        		switch(action)
+        		{
+        			case "Ping":
+        				this.onPing(id, message); break;
+        			case "Pong":
+        				this.onPong(id, message); break;
+        		}
+        	};
+        	
+        	GameSocketHandler.prototype.onPing = function(id, message)
+        	{
+        		console.log("Recieved Ping");
+        		this.doPong(id);
+        	};
+        	
+        	GameSocketHandler.prototype.onPong = function(id, message)
+        	{
+        		console.log("Recieved Pong");
+        	};
+        	
+        	GameSocketHandler.prototype.doPing = function(id)
+        	{
+        		this.doMessage(id, "Ping", {});
+        	};
+        	
+        	GameSocketHandler.prototype.doPong = function(id)
+        	{
+        		this.doMessage(id, "Pong", {});
+        	};
+        	
+        	var ws = new GameSocketHandler("ws://localhost:9000/game/connect", "test");
+        </script>
     </head>
     <body>
         @content
