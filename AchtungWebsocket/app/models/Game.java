@@ -1,14 +1,17 @@
 package models;
 
+import akka.actor.ActorRef;
+import akka.actor.Cancellable;
+import akka.actor.Props;
+import akka.actor.UntypedActor;
+import akka.util.Duration;
+import play.libs.Akka;
+import play.libs.Json;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import play.libs.Akka;
-import play.libs.Json;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.UntypedActor;
+import java.util.concurrent.TimeUnit;
 
 public class Game extends UntypedActor
 {
@@ -18,27 +21,36 @@ public class Game extends UntypedActor
 	{
 		return defaultGame;
 	}
-	
-	private GameState state = GameState.WAITING;
-	private Map<String, Player> players = new HashMap<String, Player>();
-	private Map<Integer, Collector> collectors = new HashMap<Integer, Collector>();
-	
-	public enum GameState
-	{
-		WAITING, RUNNING, PAUSED, ENDED
-	}
-	
+
+	private Cancellable scheduledTick;
+	private final Board board = new Board();
+	private final Map<String, Connection> connections = new HashMap<String, Connection>();
+	private final Map<Integer, Collector> collectors = new HashMap<Integer, Collector>();
+
 	// Pre constructor
 	{
 		this.context().watch(defaultGame);
 	}
-	
+
+	@Override
+	public void preStart()
+	{
+		scheduledTick = Akka.system().scheduler().schedule(Duration.create(20, TimeUnit.MILLISECONDS), Duration.create(20, TimeUnit.MILLISECONDS), Game.getActor(), new Inbound.Tick());
+	}
+
+	@Override
+	public void postStop()
+	{
+		scheduledTick.cancel();
+	}
+
 	@Override
 	public void onReceive(Object object) throws Exception
 	{
-		Inbound.In message = (Inbound.In) object;
-		Player player = message.getPlayer();
-		Collector collector = collectors.get(message.getId());
+		final Inbound.In message = (Inbound.In) object;
+		final Connection sender = message.getSender();
+		final Player player = (sender == null) ? null : sender.getPlayer();
+		final Collector collector = collectors.get(message.getId());
 		
 		System.out.println(message.getClass().getName());
 		
@@ -48,7 +60,7 @@ public class Game extends UntypedActor
 			{
 				if (collector.isFinished())
 				{
-					send(collector.getPlayer(), (Outbound.Out) collector.getCallback().execute(collector));
+					send(collector.getCollector(), (Outbound.Out) collector.getCallback().execute(collector));
 				}
 				
 				collectors.remove(message.getId());
@@ -59,30 +71,80 @@ public class Game extends UntypedActor
 		
 		if (message instanceof Inbound.Join)
 		{
-			players.put(player.getName(), player);
+			Outbound.Out<Outbound.Welcome> outWelcome = new Outbound.Out<Outbound.Welcome>(new Outbound.Welcome());
+			Outbound.Out<Outbound.Join> outJoin = new Outbound.Out<Outbound.Join>(new Outbound.Join());
+
+			for (Player existingPlayer : board.getPlayers().values())
+			{
+				outWelcome.getMessage().getPlayers().add(existingPlayer);
+			}
+
+			send(sender, outWelcome);
+
+			addConnection(sender);
+
+			outJoin.getMessage().setPlayer(player);
+
+			broadcast(outJoin);
 		}
 		else if (message instanceof Inbound.Quit)
 		{
-			players.remove(player.getName());
+			Outbound.Out<Outbound.Leave> outLeave = new Outbound.Out<Outbound.Leave>(new Outbound.Leave());
+
+			outLeave.getMessage().setPlayer(player);
+
+			broadcast(outLeave);
+
+			removeConnection(player.getName());
 		}
 		else if (message instanceof Inbound.Ready)
 		{
-			
+			board.start();
+		}
+		else if (message instanceof Inbound.Tick)
+		{
+			Outbound.Out<Outbound.Death> outDeath = new Outbound.Out<Outbound.Death>(new Outbound.Death());
+
+			board.tick();
+
+			outDeath.getMessage().setPlayers(board.update());
+
+			if (!outDeath.getMessage().getPlayers().isEmpty())
+			{
+				broadcast(outDeath);
+			}
+		}
+		else if (message instanceof Inbound.Direction)
+		{
+			Inbound.Direction inDirection = (Inbound.Direction) message;
+			Outbound.Out<Outbound.Direction> outDirection = new Outbound.Out<Outbound.Direction>(new Outbound.Direction());
+
+			player.setDirection(inDirection.getDirection());
+			player.flush(board.extrapolate(player, inDirection.getTime()));
+			player.setTime(inDirection.getTime());
+
+			outDirection.getMessage().setPlayer(player);
+
+			broadcast(outDirection);
 		}
 		else if (message instanceof Inbound.Ping)
 		{
 			final Inbound.Ping inPing = (Inbound.Ping) message; 
-			final Outbound.Ping outPing = new Outbound.Ping();
+			final Outbound.Out<Outbound.Ping> outPing = new Outbound.Out<Outbound.Ping>(new Outbound.Ping());
 			
-			broadcastAndCollect(outPing, inPing.getPlayer(), new Callback<Outbound.Pong>()
+			broadcastAndCollect(outPing, inPing.getSender(), new ICallback<Outbound.Out>()
 			{
 				@Override
-				public Outbound.Pong execute(Collector collector)
+				public Outbound.Out execute(Collector collector)
 				{
-					Outbound.Pong outPong = new Outbound.Pong();
+					Outbound.Out<Outbound.Pong> outPong = new Outbound.Out<Outbound.Pong>(new Outbound.Pong());
 					
 					outPong.setId(inPing.getId());
-					//outPong.s
+
+					for (Inbound.In in : collector.getResponses())
+					{
+						outPong.getMessage().getPlayers().add(in.getSender().getPlayer());
+					}
 					
 					return outPong;
 				}
@@ -92,20 +154,20 @@ public class Game extends UntypedActor
 	
 	public void broadcast(Outbound.Out message)
 	{
-		for(Player player: players.values())
+		for(Connection connection: connections.values())
 		{
-			send(player, message);
+			send(connection, message);
 		}
 	}
 	
-	public void broadcastAndCollect(Outbound.Out message, Player reportTo, Callback callback)
+	public void broadcastAndCollect(Outbound.Out message, Connection reportTo, ICallback callback)
 	{
 		Collector collector = new Collector(reportTo, callback);
 		
 		Integer outId;
 		Date nowDate = new Date(System.currentTimeMillis());
 		
-		for(Player player: players.values())
+		for(Connection connection: connections.values())
 		{
 			outId = Outbound.generateOutboundId();
 			
@@ -114,11 +176,11 @@ public class Game extends UntypedActor
 			collector.addExpected(outId);
 			collectors.put(outId, collector);
 			
-			send(player, message);
+			send(connection, message);
 		}
 	}
 	
-	public void send(Player receiver, Outbound.Out message)
+	public void send(Connection receiver, Outbound.Out message)
 	{
 		if (message.getId() == null)
 		{
@@ -132,8 +194,22 @@ public class Game extends UntypedActor
 		receiver.getOut().write(Json.toJson(message));
 	}
 
-	public Player getPlayer(String name)
+	public Connection getConnection(String name)
 	{
-		return players.get(name);
+		return connections.get(name);
+	}
+
+	public void addConnection(Connection connection)
+	{
+		Player player = connection.getPlayer();
+
+		board.addPlayer(player);
+		connections.put(player.getName(), connection);
+	}
+
+	public void removeConnection(String name)
+	{
+		board.removePlayer(name);
+		connections.remove(name);
 	}
 }

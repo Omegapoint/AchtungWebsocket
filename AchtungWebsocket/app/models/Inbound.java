@@ -1,12 +1,15 @@
 package models;
 
 
+import java.util.Date;
+
 public class Inbound
 {
 	public static abstract class In
 	{
 		private Integer id;
-		private Player player;
+		private Date time;
+		private Connection sender;
 		
 		public Integer getId()
 		{
@@ -18,30 +21,40 @@ public class Inbound
 			this.id = id;
 		}
 
-		public Player getPlayer()
+		public Date getTime()
 		{
-			return player;
+			return time;
 		}
-		
-		public void setPlayer(Player player)
+
+		public void setTime(Date time)
 		{
-			this.player = player;
+			this.time = time;
+		}
+
+		public Connection getSender()
+		{
+			return sender;
+		}
+
+		public void setSender(Connection sender)
+		{
+			this.sender = sender;
 		}
 	}
 	
 	public static class Join extends In
 	{
-		public Join(Player player)
+		public Join(Connection sender)
 		{
-			this.setPlayer(player);
+			this.setSender(sender);
 		}
 	}
 	
 	public static class Quit extends In
 	{
-		public Quit(Player player)
+		public Quit(Connection sender)
 		{
-			this.setPlayer(player);
+			this.setSender(sender);
 		}
 	}
 	
@@ -64,9 +77,24 @@ public class Inbound
 	{
 		
 	}
-	
+
 	public static class Direction extends In
 	{
-		
+		private Integer direction;
+
+		public Integer getDirection()
+		{
+			return direction;
+		}
+
+		public void setDirection(Integer direction)
+		{
+			this.direction = direction;
+		}
+	}
+
+	public static class Tick extends In
+	{
+
 	}
 }

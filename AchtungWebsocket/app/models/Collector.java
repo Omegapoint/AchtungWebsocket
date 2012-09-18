@@ -5,28 +5,33 @@ import java.util.Collection;
 
 public class Collector
 {
-	private final Player player;
-	private final Callback callback;
+	private final Connection collector;
+	private final ICallback callback;
 	private final Collection<Integer> expected;
 	private final Collection<Inbound.In> responses;
 	
-	public Collector(Player player, Callback callback)
+	public Collector(Connection collector, ICallback callback)
 	{
-		this.player = player;
+		this.collector = collector;
 		this.callback = callback;
 		
 		this.expected = new ArrayList<Integer>();
 		this.responses = new ArrayList<Inbound.In>();
 	}
 
-	public Callback getCallback()
+	public ICallback getCallback()
 	{
 		return callback;
 	}
 
-	public Player getPlayer()
+	public Connection getCollector()
 	{
-		return player;
+		return collector;
+	}
+
+	public Collection<Inbound.In> getResponses()
+	{
+		return responses;
 	}
 
 	public void addExpected(Integer id)

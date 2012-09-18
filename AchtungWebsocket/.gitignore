@@ -1,7 +1,12 @@
+.history
+.settings
+.classpath
+.project
+.idea
+.idea_modules
 logs
 project/project
 project/target
 target
 tmp
-.history
 dist

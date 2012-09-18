@@ -1,6 +1,6 @@
 package models;
 
-public interface Callback<T>
+public interface ICallback<T>
 {
 	public T execute(Collector collector);
 }
