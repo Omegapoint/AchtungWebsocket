@@ -51,26 +51,6 @@ public class Board
 		PlayerState state = new PlayerState();
 		Long msDiff = time.getTime() - player.getTime().getTime();
 
-		if (player.getDirection() == 0)
-		{
-			state.setX(player.getX().doubleValue() + Math.cos(player.getA()) * player.getV() * msDiff);
-			state.setY(player.getY().doubleValue() + Math.sin(player.getA()) * player.getV() * msDiff);
-			state.setA(player.getA());
-		}
-		else
-		{
-			Double vx, vy, cx, cy;
-
-			vx = Math.cos(player.getA() + player.getDirection().doubleValue() * Math.PI / 2D) * player.getR();
-			vy = Math.sin(player.getA() + player.getDirection().doubleValue() * Math.PI / 2D) * player.getR();
-			cx = player.getX().doubleValue() - vx;
-			cy = player.getY().doubleValue() - vy;
-
-			state.setA(player.getA() + player.getV() * msDiff / (2D * Math.PI * player.getR()));
-			state.setX(player.getX().doubleValue() + Math.cos(state.getA()) * player.getR());
-			state.setY(player.getY().doubleValue() + Math.sin(state.getA()) * player.getR());
-		}
-
 		return state;
 	}
 
@@ -106,6 +86,11 @@ public class Board
 	public static class PlayerState
 	{
 		private Double x, y, a;
+
+		public PlayerState()
+		{
+			x = y = a = 0D;
+		}
 
 		public Double getX()
 		{
