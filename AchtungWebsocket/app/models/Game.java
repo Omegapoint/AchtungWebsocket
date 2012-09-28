@@ -131,8 +131,8 @@ public class Game extends UntypedActor
 			Inbound.Direction inDirection = (Inbound.Direction) message;
 			Outbound.Out<Outbound.Direction> outDirection = new Outbound.Out<Outbound.Direction>(new Outbound.Direction());
 
-			player.setDirection(inDirection.getDirection());
 			outDirection.getMessage().setPart(player.flush(board.extrapolate(player, inDirection.getTime())));
+			player.setDirection(inDirection.getDirection());
 			player.setTime(inDirection.getTime());
 
 			outDirection.getMessage().setPlayer(player);
