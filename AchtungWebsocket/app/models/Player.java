@@ -11,7 +11,7 @@ import java.util.List;
 public class Player
 {
 	private static Integer PLAYER_INDEX = 0;
-	private static final Integer PLAYER_RADIUS = 20;
+	private static final Double PLAYER_RADIUS = 20D;
 	private static final String[] PLAYER_COLOR = new String[]{ "#ff0000", "#00ff00", "#0000ff", "#0fff00", "#ffff00" };
 
 	private final String name;
@@ -86,7 +86,7 @@ public class Player
 		this.y = y;
 	}
 
-	public Integer getR()
+	public Double getR()
 	{
 		return PLAYER_RADIUS;
 	}
@@ -154,7 +154,11 @@ public class Player
 		{
 			Arc arc = new Arc();
 
-			// TODO: Generate arc
+			arc.setX(this.getR() * Math.cos(this.getA() + this.getDirection() * Math.PI / 2) + this.getX());
+			arc.setY(this.getR() * Math.sin(this.getA() + this.getDirection() * Math.PI / 2) + this.getY());
+			arc.setR(this.getR());
+			arc.setAs(this.getA() - this.getDirection() * Math.PI / 2);
+			arc.setAe(extrapolated.getA() - this.getDirection() * Math.PI / 2);
 
 			retval = arc;
 		}

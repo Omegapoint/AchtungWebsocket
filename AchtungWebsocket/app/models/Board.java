@@ -31,7 +31,7 @@ public class Board
 			player.setX(randomNumber);
 			player.setY(randomNumber / 2);
 			player.setA(0D);
-			player.setV(0.0010D);
+			player.setV(0.01D);
 			player.setTime(nowTime);
 		}
 
@@ -58,13 +58,22 @@ public class Board
 	public PlayerState extrapolate(Player player, Date time)
 	{
 		PlayerState state = new PlayerState();
-		Long msDiff = time.getTime() - player.getTime().getTime();
+		Long dT = time.getTime() - player.getTime().getTime();
 
-     //  if(player.getDirection() == 0) {
-           state.setX(Math.cos(player.getA()) * player.getV() * msDiff + player.getX());
-           state.setY(Math.sin(player.getA()) * player.getV() * msDiff + player.getY());
-           state.setA(player.getA());
-    //   }
+		if (player.getDirection() == 0)
+		{
+			state.setX(Math.cos(player.getA()) * player.getV() * dT + player.getX());
+			state.setY(Math.sin(player.getA()) * player.getV() * dT + player.getY());
+			state.setA(player.getA());
+		}
+		else
+		{
+			Double fi = (Math.PI * player.getV() * dT) / (2 * player.getR());
+
+			state.setA(player.getA() + fi);
+			state.setX(-player.getR() * Math.cos((player.getA() + player.getDirection() * Math.PI / 2) + fi) + player.getR() * Math.cos(player.getA() + Math.PI / 2) + player.getX());
+			state.setY(-player.getR() * Math.sin((player.getA() + player.getDirection() * Math.PI / 2) + fi) + player.getR() * Math.sin(player.getA() + Math.PI / 2) + player.getY());
+		}
 
 		return state;
 	}
