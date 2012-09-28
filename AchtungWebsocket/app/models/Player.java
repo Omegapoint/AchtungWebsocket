@@ -9,7 +9,7 @@ public class Player
 {
 	private static Integer PLAYER_INDEX = 0;
 	private static final Integer PLAYER_RADIUS = 20;
-	private static final String[] PLAYER_COLOR = new String[]{ "#ff0000", "#00ff00", "#0000ff", "#0ff000", "#ffff00" };
+	private static final String[] PLAYER_COLOR = new String[]{ "#ff0000", "#00ff00", "#0000ff", "#0fff00", "#ffff00" };
 
 	private final String name;
 	private final String color;

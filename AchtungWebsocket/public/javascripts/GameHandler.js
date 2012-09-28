@@ -8,11 +8,6 @@ var GameHandler = function()
 
     if (this.canvas.getContext)
     {
-        //this.canvas.setAttribute("style", "width:" + window.innerWidth + "px;height:" + window.innerHeight + "px;");
-        //this.canvas.appendChild(document.createTextNode("HTML5 unsupported in browser."));
-
-        //body.appendChild(this.canvas);
-
         this.context = this.canvas.getContext("2d");
         this.context.canvas.width  = window.innerWidth;
         this.context.canvas.height = window.innerHeight;
@@ -72,22 +67,53 @@ GameHandler.prototype.drawPlayers = function()
             continue;
         }
 
-        var position = this.calculatePosition(player);
-
         var ctx = this.context;
+        ctx.fillStyle = player.color;
+        ctx.strokeStyle = player.color;
+        ctx.lineWidth=4;
+
+
         player.arcs.forEach(function(arc) {
             ctx.beginPath();
             ctx.moveTo(arc.x, arc.y);
-            ctx.lineTo(arc.dy, arc.dy);
+            ctx.lineTo(arc.dx, arc.dy);
+            ctx.stroke();
             ctx.closePath();
         });
 
-        this.context.beginPath();
-        this.context.arc(position.x, position.y, 5, 0, Math.PI*2, false);
-        //this.context.moveTo(position.x, position.y);
-        this.context.fillStyle = player.color;
-        this.context.fill();
-        this.context.closePath();
+        var position = this.calculatePosition(player);
+        if(player.direction === 0) {
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y);
+            ctx.lineTo(position.x, position.y);
+            ctx.stroke();
+            ctx.closePath();
+        } else {
+            var now = Date.now();
+            var dT = now - player.time;
+            var fi = (Math.PI * player.v * dT) / (2* player.r);
+            var rs = -1 * player.direction * Math.PI/2;
+            var re = rs + fi;
+
+            var _f = function(func, angle) {
+                return player.r * func(player.a + player.direction * angle);
+            };
+            var circleCenter = {
+                x: _f(Math.cos, Math.PI/2) + player.x,
+                y: _f(Math.sin, Math.PI/2) + player.y
+            };
+
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y);
+            ctx.arc(circleCenter.x, circleCenter.y, player.r, rs, re, false);
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        ctx.beginPath();
+        ctx.arc(position.x, position.y, 5, 0, Math.PI*2, false);
+        ctx.fill();
+        ctx.closePath();
 
     }
 };
@@ -103,14 +129,30 @@ GameHandler.prototype.calculatePosition = function(player)
     var dT = now - player.time;
 
     var x, y, a;
-    if(true || player.direction === 0) {
+    if(player.direction === 0) {
         x = player.x + Math.cos(player.a) * player.v * dT;
         y = player.y + Math.sin(player.a) * player.v * dT;
-        a = player.a;
+        return {"x": x, "y": y};
     } else {
-        
+        var fi = (Math.PI * player.v * dT) / (2* player.r);
+        var _f = function(func, angle) {
+          return player.r * func(player.a + player.direction*angle);
+        };
+        var currentCirclePos =  {
+            x: -1 * _f(Math.cos, Math.PI/2),
+            y: -1 * _f(Math.sin, Math.PI/2)
+        };
+        var futureCirclePos =  {
+            x: -1 * _f(Math.cos, Math.PI/2 + fi),
+            y: -1 * _f(Math.sin, Math.PI/2 + fi)
+        };
+
+        return {
+            "x": player.x + futureCirclePos.x - currentCirclePos.x,
+            "y": player.y + futureCirclePos.y - currentCirclePos.y
+        };
     }
-    return {"x": x, "y": y};
+
 };
 
 GameHandler.prototype.onWelcome = function(message)
