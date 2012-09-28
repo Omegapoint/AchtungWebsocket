@@ -2,6 +2,8 @@ package models;
 
 import java.util.*;
 
+import models.iface.Collidable;
+
 public class Board
 {
 	private final Map<String, Player> players = new HashMap<String, Player>();
@@ -65,7 +67,25 @@ public class Board
 		List<Player> collided = new ArrayList<Player>();
 
 		// TODO: Detect collisions and add to list
-
+		
+		// Collect all parts
+		List<Collidable> allParts = new ArrayList<Collidable>();
+		for (Player player : this.players.values()) {
+			allParts.addAll(player.getParts());
+		}
+		
+		// TODO: Need to add the walls to allParts
+		
+		for (Player player : this.players.values()) {
+			for (Collidable collidable : allParts) {
+				if(collidable.isCollision(player.getX(), player.getY()))
+				{
+					collided.add(player);
+				}
+			}
+		}
+		
+		
 		return collided;
 	}
 

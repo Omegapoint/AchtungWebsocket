@@ -1,6 +1,9 @@
 package models;
 
 import javax.persistence.Transient;
+
+import models.iface.Collidable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,14 +23,14 @@ public class Player
 	private Long x;
 	private Long y;
 	private Integer direction;
-	private List<Object> parts;
+	private List<Collidable> parts;
 	
 	public Player(String name)
 	{
 		this.name = name;
 		this.color = PLAYER_COLOR[PLAYER_INDEX % PLAYER_COLOR.length];
 		this.direction = 0;
-		this.parts = new ArrayList<Object>();
+		this.parts = new ArrayList<Collidable>();
 
 		PLAYER_INDEX++;
 	}
@@ -108,12 +111,12 @@ public class Player
 	}
 
 	@Transient
-	public List<Object> getParts()
+	public List<Collidable> getParts()
 	{
 		return parts;
 	}
 
-	public void addPart(Object part)
+	public void addPart(Collidable part)
 	{
 		if ((part instanceof Arc) || (part instanceof Line))
 		{
