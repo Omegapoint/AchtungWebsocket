@@ -8,6 +8,8 @@ public class Board
 {
 	private final Map<String, Player> players = new HashMap<String, Player>();
 
+    private Integer sizeX;
+    private Integer sizeY;
 	private BoardState state = BoardState.WAITING;
 
 	public enum BoardState
@@ -18,11 +20,16 @@ public class Board
 	public void start()
 	{
 		Date nowTime = new Date();
-
+         Random randomGenerator = new Random();
 		for (Player player : players.values())
 		{
-			player.setX(0D);
-			player.setY(0D);
+
+            int random = randomGenerator.nextInt(10) + randomGenerator.nextInt();
+            double decimalRandom = randomGenerator.nextDouble();
+            double randomNumber = random + decimalRandom;
+
+			player.setX(randomNumber);
+			player.setY(randomNumber / 2);
 			player.setA(0D);
 			player.setV(0.0010D);
 			player.setTime(nowTime);
@@ -108,6 +115,35 @@ public class Board
 	{
 		players.remove(name);
 	}
+
+    public Integer getSizeX() {
+        return sizeX;
+    }
+
+    public void setSizeX(Integer sizeX) {
+        this.sizeX = sizeX;
+    }
+
+    public Integer getSizeY() {
+        return sizeY;
+    }
+
+    public void setSizeY(Integer sizeY) {
+        this.sizeY = sizeY;
+    }
+
+    public boolean allPlayersAreReady()
+    {
+        for (Player readyPlayers : this.getPlayers().values())
+        {
+            if(!readyPlayers.isReady())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 	public static class PlayerState
 	{

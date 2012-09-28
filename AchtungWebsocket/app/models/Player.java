@@ -23,7 +23,15 @@ public class Player
 	private Double x;
 	private Double y;
 	private Integer direction;
+<<<<<<< HEAD
 	private List<Collidable> parts;
+=======
+	private List<Object> parts;
+
+
+
+    private boolean isReady;
+>>>>>>> added random, size of board and players ready
 	
 	public Player(String name)
 	{
@@ -109,6 +117,14 @@ public class Player
 	{
 		this.direction = direction;
 	}
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void setReady(boolean ready) {
+        isReady = ready;
+    }
 
 	@Transient
 	public List<Collidable> getParts()
