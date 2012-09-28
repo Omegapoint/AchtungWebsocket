@@ -52,7 +52,7 @@ public class Game extends UntypedActor
 		final Player player = (sender == null) ? null : sender.getPlayer();
 		final Collector collector = collectors.get(message.getId());
 		
-		System.out.println(message.getClass().getName());
+		//System.out.println(message.getClass().getName());
 		
 		if (collector != null)
 		{

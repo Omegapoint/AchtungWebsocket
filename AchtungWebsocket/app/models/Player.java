@@ -1,6 +1,6 @@
 package models;
 
-import java.beans.Transient;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +25,7 @@ public class Player
 	public Player(String name)
 	{
 		this.name = name;
-		this.color = PLAYER_COLOR[PLAYER_INDEX];
+		this.color = PLAYER_COLOR[PLAYER_INDEX % PLAYER_COLOR.length];
 		this.direction = 0;
 		this.parts = new ArrayList<Object>();
 
