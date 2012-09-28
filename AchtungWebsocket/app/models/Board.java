@@ -73,7 +73,7 @@ public class Board
 		{
 			Double fi = (Math.PI * player.getV() * dT) / (2 * player.getR());
 
-			state.setA(player.getA() + fi);
+			state.setA((player.getA() + fi) % (2 * Math.PI));
 			state.setX(-1 * player.getR() * Math.cos(player.getA() + (player.getDirection() * Math.PI / 2) + fi) + player.getR() * Math.cos(player.getA() + Math.PI / 2) + player.getX());
 			state.setY(-1 * player.getR() * Math.sin(player.getA() + (player.getDirection() * Math.PI / 2) + fi) + player.getR() * Math.sin(player.getA() + Math.PI / 2) + player.getY());
 		}

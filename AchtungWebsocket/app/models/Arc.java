@@ -9,6 +9,7 @@ public class Arc implements Collidable
 	private Double r;
 	private Double as;
 	private Double ae;
+	private Integer direction;
 
 	public Double getX()
 	{
@@ -58,6 +59,16 @@ public class Arc implements Collidable
 	public void setAs(Double as)
 	{
 		this.as = as;
+	}
+
+	public Integer getDirection()
+	{
+		return direction;
+	}
+
+	public void setDirection(Integer direction)
+	{
+		this.direction = direction;
 	}
 
 	public boolean isCollision(Double x, Double y)
