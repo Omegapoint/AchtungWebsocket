@@ -1,6 +1,9 @@
 package models;
 
+import java.beans.Transient;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Player
 {
@@ -17,12 +20,14 @@ public class Player
 	private Long x;
 	private Long y;
 	private Integer direction;
+	private List<Object> parts;
 	
 	public Player(String name)
 	{
 		this.name = name;
 		this.color = PLAYER_COLOR[PLAYER_INDEX];
 		this.direction = 0;
+		this.parts = new ArrayList<Object>();
 
 		PLAYER_INDEX++;
 	}
@@ -100,6 +105,24 @@ public class Player
 	public void setDirection(Integer direction)
 	{
 		this.direction = direction;
+	}
+
+	@Transient
+	public List<Object> getParts()
+	{
+		return parts;
+	}
+
+	public void addPart(Object part)
+	{
+		if ((part instanceof Arc) || (part instanceof Line))
+		{
+			parts.add(part);
+		}
+		else
+		{
+			throw new IllegalArgumentException("Can only add Line or Arc to part list.");
+		}
 	}
 
 	public Object flush(Board.PlayerState extrapolated)
