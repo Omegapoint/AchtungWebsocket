@@ -28,13 +28,13 @@ public class Board
 			double decimalRandom = randomGenerator.nextDouble();
 			double randomNumber = random + decimalRandom;
 
-			Integer x = randomGenerator.nextInt() % this.getSizeX();
-			Integer y = randomGenerator.nextInt() % this.getSizeY();
+			Integer x = Math.abs(randomGenerator.nextInt()) % this.getSizeX();
+			Integer y = Math.abs(randomGenerator.nextInt()) % this.getSizeY();
 
 			player.setX(x.doubleValue());
 			player.setY(y.doubleValue());
 			player.setA(0D);
-			player.setV(0.01D);
+			player.setV(0.001D);
 			player.setTime(nowTime);
 		}
 
