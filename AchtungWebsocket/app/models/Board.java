@@ -51,11 +51,11 @@ public class Board
 		PlayerState state = new PlayerState();
 		Long msDiff = time.getTime() - player.getTime().getTime();
 
-       if(player.getDirection() == 0) {
+     //  if(player.getDirection() == 0) {
            state.setX(Math.cos(player.getA()) * player.getV() * msDiff + player.getX());
            state.setY(Math.sin(player.getA()) * player.getV() * msDiff + player.getY());
            state.setA(player.getA());
-       }
+    //   }
 
 		return state;
 	}
