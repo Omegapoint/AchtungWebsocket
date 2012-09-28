@@ -1,6 +1,9 @@
 package models;
 
 import javax.persistence.Transient;
+
+import models.iface.Collidable;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,14 +23,22 @@ public class Player
 	private Double x;
 	private Double y;
 	private Integer direction;
+<<<<<<< HEAD
+	private List<Collidable> parts;
+=======
 	private List<Object> parts;
+
+
+
+    private boolean isReady;
+>>>>>>> added random, size of board and players ready
 	
 	public Player(String name)
 	{
 		this.name = name;
 		this.color = PLAYER_COLOR[PLAYER_INDEX % PLAYER_COLOR.length];
 		this.direction = 0;
-		this.parts = new ArrayList<Object>();
+		this.parts = new ArrayList<Collidable>();
 
 		PLAYER_INDEX++;
 	}
@@ -107,13 +118,21 @@ public class Player
 		this.direction = direction;
 	}
 
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void setReady(boolean ready) {
+        isReady = ready;
+    }
+
 	@Transient
-	public List<Object> getParts()
+	public List<Collidable> getParts()
 	{
 		return parts;
 	}
 
-	public void addPart(Object part)
+	public void addPart(Collidable part)
 	{
 		if ((part instanceof Arc) || (part instanceof Line))
 		{

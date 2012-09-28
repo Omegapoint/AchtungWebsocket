@@ -1,6 +1,8 @@
 package models;
 
-public class Line
+import models.iface.Collidable;
+
+public class Line implements Collidable
 {
 	private Double x;
 	private Double y;
@@ -45,5 +47,18 @@ public class Line
 	public void setDy(Double dy)
 	{
 		this.dy = dy;
+	}
+	
+	public boolean isCollision(Double x, Double y)
+	{
+		double k1 = this.dx/this.dy;
+		double k2 = (x-this.x)/(y-this.y);
+		if(k1 == k2)
+		{
+			return this.x <= x && x <= this.x+this.dx && this.y <= y && y <= this.y+this.dy;
+		}
+		return false;
+		
+		//return this.x <= x && x <= this.x+this.dx && this.y <= y && y <= this.y+this.dy && (this.dx/this.dy == (x-this.x)/(y-this.y));
 	}
 }

@@ -102,8 +102,12 @@ public class Game extends UntypedActor
 		}
 		else if (message instanceof Inbound.Ready)
 		{
-			board.start();
-
+            board.getSizeX();
+            board.getSizeY();
+            if(board.allPlayersAreReady())
+            {
+			    board.start();
+            }
 
 		}
 		else if (message instanceof Inbound.Tick)

@@ -1,6 +1,8 @@
 package models;
 
-public class Arc
+import models.iface.Collidable;
+
+public class Arc implements Collidable
 {
 	private Double x;
 	private Double y;
@@ -57,4 +59,9 @@ public class Arc
 	{
 		this.amcc = amcc;
 	}
+
+	public boolean isCollision(Double x, Double y) {
+		return false;
+	}
+
 }
