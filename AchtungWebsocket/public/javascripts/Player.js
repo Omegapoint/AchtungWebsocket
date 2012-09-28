@@ -18,7 +18,7 @@ Player.prototype.update = function(player, part, time)
     this.x = player.x;
     this.y = player.y;
     this.r = player.r;
-    this.v = player.v;
+    this.v = player.v * 100;
     this.time = time;
     this.direction = player.direction;
 

@@ -3,7 +3,7 @@ var GameHandler = function()
     var self = this;
     var body = document.getElementsByTagName("body")[0];
 
-    this.name = window.prompt();
+    this.name = "superdupertestplayer";//window.prompt("Give me your name!");
     this.canvas = document.getElementById("canvas");
 
     if (this.canvas.getContext)
@@ -74,24 +74,21 @@ GameHandler.prototype.drawPlayers = function()
 
         var position = this.calculatePosition(player);
 
-        this.context.beginPath();
+        var ctx = this.context;
+        player.arcs.forEach(function(arc) {
+            ctx.beginPath();
+            ctx.moveTo(arc.x, arc.y);
+            ctx.lineTo(arc.dy, arc.dy);
+            ctx.closePath();
+        });
 
+        this.context.beginPath();
         this.context.arc(position.x, position.y, 5, 0, Math.PI*2, false);
         //this.context.moveTo(position.x, position.y);
         this.context.fillStyle = player.color;
         this.context.fill();
-        //this.context.stroke();
-
         this.context.closePath();
 
-        //for (var n in player.arcs)
-        //{
-        //    var arc = player.arcs[n];
-
-        //    this.context.beginPath();
-
-        //    this.context.closePath();
-        //}
     }
 };
 
@@ -113,7 +110,6 @@ GameHandler.prototype.calculatePosition = function(player)
     } else {
         
     }
-
     return {"x": x, "y": y};
 };
 
@@ -153,7 +149,6 @@ GameHandler.prototype.doPong = function(id)
 GameHandler.prototype.onTurn = function(message, id, time)
 {
     var him = this.findPlayer(message.player);
-
     him.update(message.player, message.part, time);
 };
 
