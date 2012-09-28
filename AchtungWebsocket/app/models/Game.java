@@ -104,6 +104,9 @@ public class Game extends UntypedActor
 		{
             board.getSizeX();
             board.getSizeY();
+
+			player.setReady(true);
+
             if(board.allPlayersAreReady())
             {
 			    board.start();

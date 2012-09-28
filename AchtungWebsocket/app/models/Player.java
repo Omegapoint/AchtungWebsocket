@@ -23,16 +23,9 @@ public class Player
 	private Double x;
 	private Double y;
 	private Integer direction;
-<<<<<<< HEAD
 	private List<Collidable> parts;
-=======
-	private List<Object> parts;
-
-
-
     private boolean isReady;
->>>>>>> added random, size of board and players ready
-	
+
 	public Player(String name)
 	{
 		this.name = name;
