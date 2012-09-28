@@ -111,11 +111,13 @@ public class Player
 		this.direction = direction;
 	}
 
-    public boolean isReady() {
+    public boolean isReady()
+	{
         return isReady;
     }
 
-    public void setReady(boolean ready) {
+    public void setReady(boolean ready)
+	{
         isReady = ready;
     }
 
