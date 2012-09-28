@@ -127,12 +127,30 @@ public class Player
 
 	public Object flush(Board.PlayerState extrapolated)
 	{
+		Object retval =  null;
+
+		if (this.direction == 0) // Line
+		{
+			Line line = new Line();
+			line.setX(this.x);
+			line.setY(this.y);
+			line.setDx(Math.round(extrapolated.getX()) - this.x);
+			line.setDy(Math.round(extrapolated.getY()) - this.y);
+			retval = line;
+		}
+		else
+		{
+			Arc arc = new Arc();
+
+			// TODO: Generate arc
+
+			retval = arc;
+		}
+
 		this.setA(extrapolated.getA());
 		this.setX(Math.round(extrapolated.getX()));
 		this.setY(Math.round(extrapolated.getY()));
 
-		// TODO: Generate Arc or Line to return
-
-		return null;
+		return retval;
 	}
 }
