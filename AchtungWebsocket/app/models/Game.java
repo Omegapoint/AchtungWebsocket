@@ -51,9 +51,12 @@ public class Game extends UntypedActor
 		final Connection sender = message.getSender();
 		final Player player = (sender == null) ? null : sender.getPlayer();
 		final Collector collector = collectors.get(message.getId());
-		
-		//System.out.println(message.getClass().getName());
-		
+
+		if (!(message instanceof Inbound.Tick))
+		{
+			System.out.println(message.getClass().getName());
+		}
+
 		if (collector != null)
 		{
 			if (collector.registerResponse(message))
@@ -100,6 +103,8 @@ public class Game extends UntypedActor
 		else if (message instanceof Inbound.Ready)
 		{
 			board.start();
+
+
 		}
 		else if (message instanceof Inbound.Tick)
 		{

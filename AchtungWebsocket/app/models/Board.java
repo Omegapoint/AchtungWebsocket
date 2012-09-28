@@ -22,7 +22,7 @@ public class Board
 			player.setX(0L);
 			player.setY(0L);
 			player.setA(0D);
-			player.setV(0.0001D);
+			player.setV(0.0010D);
 			player.setTime(nowTime);
 		}
 
@@ -50,6 +50,12 @@ public class Board
 	{
 		PlayerState state = new PlayerState();
 		Long msDiff = time.getTime() - player.getTime().getTime();
+
+       if(player.getDirection() == 0) {
+           state.setX(Math.cos(player.getA()) * player.getV() * msDiff + player.getX());
+           state.setY(Math.sin(player.getA()) * player.getV() * msDiff + player.getY());
+           state.setA(player.getA());
+       }
 
 		return state;
 	}
