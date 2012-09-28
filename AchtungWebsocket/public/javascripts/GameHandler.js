@@ -74,11 +74,18 @@ GameHandler.prototype.drawPlayers = function()
 
 
         player.arcs.forEach(function(arc) {
-            ctx.beginPath();
-            ctx.moveTo(arc.x, arc.y);
-            ctx.lineTo(arc.dx, arc.dy);
-            ctx.stroke();
-            ctx.closePath();
+            if(arc.hasOwnProperty("as")) {
+                ctx.beginPath();
+                ctx.arc(arc.x,  arc.y, player.r, arc.as, arc.ae, arc.direction === -1);
+                ctx.stroke();
+                ctx.closePath();
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(arc.x, arc.y);
+                ctx.lineTo(arc.x + arc.dx, arc.y + arc.dy);
+                ctx.stroke();
+                ctx.closePath();
+            }
         });
 
         var position = this.calculatePosition(player);
@@ -91,9 +98,9 @@ GameHandler.prototype.drawPlayers = function()
         } else {
             var now = Date.now();
             var dT = now - player.time;
-            var fi = (Math.PI * player.v * dT) / (2* player.r);
-            var rs = -1 * player.direction * Math.PI/2;
-            var re = rs + fi;
+            var fi = ((Math.PI * player.v * dT) / (2* player.r)) % (2 * Math.PI);
+            var rs = player.a + -player.direction * Math.PI/2;
+            var re = rs + player.direction * fi;
 
             var _f = function(func, angle) {
                 return player.r * func(player.a + player.direction * angle);
@@ -105,10 +112,12 @@ GameHandler.prototype.drawPlayers = function()
 
             ctx.beginPath();
             ctx.moveTo(player.x, player.y);
-            ctx.arc(circleCenter.x, circleCenter.y, player.r, rs, re, false);
+            ctx.arc(circleCenter.x, circleCenter.y, player.r, rs, re, player.direction === -1);
             ctx.stroke();
+            ctx.moveTo(player.x, player.y);
             ctx.closePath();
         }
+
 
         ctx.beginPath();
         ctx.arc(position.x, position.y, 5, 0, Math.PI*2, false);
