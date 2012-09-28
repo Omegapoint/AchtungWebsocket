@@ -102,10 +102,14 @@ public class Player
 		this.direction = direction;
 	}
 
-	public void flush(Board.PlayerState extrapolated)
+	public Object flush(Board.PlayerState extrapolated)
 	{
 		this.setA(extrapolated.getA());
 		this.setX(Math.round(extrapolated.getX()));
 		this.setY(Math.round(extrapolated.getY()));
+
+		// TODO: Generate Arc or Line to return
+
+		return null;
 	}
 }

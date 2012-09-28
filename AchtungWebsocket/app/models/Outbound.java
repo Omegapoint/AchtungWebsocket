@@ -98,7 +98,18 @@ public class Outbound
 
 	public static class Direction
 	{
+		private Object part;
 		private Player player;
+
+		public Object getPart()
+		{
+			return part;
+		}
+
+		public void setPart(Object part)
+		{
+			this.part = part;
+		}
 
 		public Player getPlayer()
 		{

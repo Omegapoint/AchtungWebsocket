@@ -13,10 +13,11 @@ public class WebsocketException extends Exception
 		super();
 	}
 
-	public WebsocketException(String arg0, Throwable arg1, boolean arg2, boolean arg3)
+	// Removed to make JDK6 compatible
+	/*public WebsocketException(String arg0, Throwable arg1, boolean arg2, boolean arg3)
 	{
 		super(arg0, arg1, arg2, arg3);
-	}
+	}*/
 
 	public WebsocketException(String arg0, Throwable arg1)
 	{

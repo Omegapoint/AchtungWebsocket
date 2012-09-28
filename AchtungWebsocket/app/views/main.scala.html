@@ -209,7 +209,7 @@
             {
                 var him = this.findPlayer(message.player);
 
-                him.update(message.player, message.arc, time);
+                him.update(message.player, message.part, time);
             };
 
             GameHandler.prototype.doTurn = function(id, direction)
@@ -265,7 +265,7 @@
                 this.direction = 0; // Current direction (-1 = left, 0 = straight, 1 = right)
             };
 
-            Player.prototype.update = function(player, arc, time)
+            Player.prototype.update = function(player, part, time)
             {
                 this.x = player.x;
                 this.y = player.y;
@@ -274,7 +274,7 @@
                 this.time = time;
                 this.direction = player.direction;
 
-                this.arcs.push(arc);
+                this.arcs.push(part);
             };
         </script>
     </head>
