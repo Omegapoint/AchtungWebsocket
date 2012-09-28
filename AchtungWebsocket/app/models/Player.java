@@ -20,8 +20,8 @@ public class Player
 	private Date time;
 	private Double a;
 	private Double v;
-	private Long x;
-	private Long y;
+	private Double x;
+	private Double y;
 	private Integer direction;
 	private List<Collidable> parts;
 	
@@ -65,22 +65,22 @@ public class Player
 		this.a = a;
 	}
 
-	public Long getX()
+	public Double getX()
 	{
 		return x;
 	}
 
-	public void setX(Long x)
+	public void setX(Double x)
 	{
 		this.x = x;
 	}
 
-	public Long getY()
+	public Double getY()
 	{
 		return y;
 	}
 
-	public void setY(Long y)
+	public void setY(Double y)
 	{
 		this.y = y;
 	}
@@ -137,8 +137,8 @@ public class Player
 			Line line = new Line();
 			line.setX(this.x);
 			line.setY(this.y);
-			line.setDx(Math.round(extrapolated.getX()) - this.x);
-			line.setDy(Math.round(extrapolated.getY()) - this.y);
+			line.setDx(extrapolated.getX() - this.x);
+			line.setDy(extrapolated.getY() - this.y);
 			retval = line;
 		}
 		else
@@ -151,8 +151,8 @@ public class Player
 		}
 
 		this.setA(extrapolated.getA());
-		this.setX(Math.round(extrapolated.getX()));
-		this.setY(Math.round(extrapolated.getY()));
+		this.setX(extrapolated.getX());
+		this.setY(extrapolated.getY());
 
 		return retval;
 	}

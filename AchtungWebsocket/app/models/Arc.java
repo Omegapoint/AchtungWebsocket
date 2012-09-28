@@ -4,38 +4,38 @@ import models.iface.Collidable;
 
 public class Arc implements Collidable
 {
-	private Long x;
-	private Long y;
-	private Long r;
+	private Double x;
+	private Double y;
+	private Double r;
 	private Double amc;
 	private Double amcc;
 
-	public Long getX()
+	public Double getX()
 	{
 		return x;
 	}
 
-	public void setX(Long x)
+	public void setX(Double x)
 	{
 		this.x = x;
 	}
 
-	public Long getY()
+	public Double getY()
 	{
 		return y;
 	}
 
-	public void setY(Long y)
+	public void setY(Double y)
 	{
 		this.y = y;
 	}
 
-	public Long getR()
+	public Double getR()
 	{
 		return r;
 	}
 
-	public void setR(Long r)
+	public void setR(Double r)
 	{
 		this.r = r;
 	}
