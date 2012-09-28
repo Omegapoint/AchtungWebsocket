@@ -60,9 +60,8 @@ public class Arc implements Collidable
 		this.amcc = amcc;
 	}
 
-	public boolean isCollision(Long x, Long y) {
+	public boolean isCollision(Double x, Double y) {
 		return false;
 	}
-	
-	
+
 }

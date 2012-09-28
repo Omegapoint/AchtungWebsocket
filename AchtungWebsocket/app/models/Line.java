@@ -49,7 +49,7 @@ public class Line implements Collidable
 		this.dy = dy;
 	}
 	
-	public boolean isCollision(Long x, Long y)
+	public boolean isCollision(Double x, Double y)
 	{
 		double k1 = this.dx/this.dy;
 		double k2 = (x-this.x)/(y-this.y);
