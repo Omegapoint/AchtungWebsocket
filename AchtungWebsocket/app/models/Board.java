@@ -19,8 +19,8 @@ public class Board
 
 		for (Player player : players.values())
 		{
-			player.setX(0L);
-			player.setY(0L);
+			player.setX(0D);
+			player.setY(0D);
 			player.setA(0D);
 			player.setV(0.0010D);
 			player.setTime(nowTime);

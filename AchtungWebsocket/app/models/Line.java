@@ -2,47 +2,47 @@ package models;
 
 public class Line
 {
-	private Long x;
-	private Long y;
-	private Long dx;
-	private Long dy;
+	private Double x;
+	private Double y;
+	private Double dx;
+	private Double dy;
 
-	public Long getX()
+	public Double getX()
 	{
 		return x;
 	}
 
-	public void setX(Long x)
+	public void setX(Double x)
 	{
 		this.x = x;
 	}
 
-	public Long getY()
+	public Double getY()
 	{
 		return y;
 	}
 
-	public void setY(Long y)
+	public void setY(Double y)
 	{
 		this.y = y;
 	}
 
-	public Long getDx()
+	public Double getDx()
 	{
 		return dx;
 	}
 
-	public void setDx(Long dx)
+	public void setDx(Double dx)
 	{
 		this.dx = dx;
 	}
 
-	public Long getDy()
+	public Double getDy()
 	{
 		return dy;
 	}
 
-	public void setDy(Long dy)
+	public void setDy(Double dy)
 	{
 		this.dy = dy;
 	}
