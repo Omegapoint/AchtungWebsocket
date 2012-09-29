@@ -3,16 +3,11 @@ var GameHandler = function()
     var self = this;
     var body = document.getElementsByTagName("body")[0];
 
-    this.name = window.prompt();
+    this.name = "superdupertestplayer";//window.prompt("Give me your name!");
     this.canvas = document.getElementById("canvas");
 
     if (this.canvas.getContext)
     {
-        //this.canvas.setAttribute("style", "width:" + window.innerWidth + "px;height:" + window.innerHeight + "px;");
-        //this.canvas.appendChild(document.createTextNode("HTML5 unsupported in browser."));
-
-        //body.appendChild(this.canvas);
-
         this.context = this.canvas.getContext("2d");
         this.context.canvas.width  = window.innerWidth;
         this.context.canvas.height = window.innerHeight;
@@ -72,26 +67,63 @@ GameHandler.prototype.drawPlayers = function()
             continue;
         }
 
+        var ctx = this.context;
+        ctx.fillStyle = player.color;
+        ctx.strokeStyle = player.color;
+        ctx.lineWidth=4;
+
+
+        player.arcs.forEach(function(arc) {
+            if(arc.hasOwnProperty("as")) {
+                ctx.beginPath();
+                ctx.arc(arc.x,  arc.y, player.r, arc.as, arc.ae, arc.direction === -1);
+                ctx.stroke();
+                ctx.closePath();
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(arc.x, arc.y);
+                ctx.lineTo(arc.x + arc.dx, arc.y + arc.dy);
+                ctx.stroke();
+                ctx.closePath();
+            }
+        });
+
         var position = this.calculatePosition(player);
+        if(player.direction === 0) {
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y);
+            ctx.lineTo(position.x, position.y);
+            ctx.stroke();
+            ctx.closePath();
+        } else {
+            var now = Date.now();
+            var dT = now - player.time;
+            var fi = ((Math.PI * player.v * dT) / (2* player.r)) % (2 * Math.PI);
+            var rs = player.a + -player.direction * Math.PI/2;
+            var re = rs + player.direction * fi;
 
-        this.context.beginPath();
+            var _f = function(func, angle) {
+                return player.r * func(player.a + player.direction * angle);
+            };
+            var circleCenter = {
+                x: _f(Math.cos, Math.PI/2) + player.x,
+                y: _f(Math.sin, Math.PI/2) + player.y
+            };
 
-        this.context.arc(position.x, position.y, 5, 0, Math.PI*2, false);
-        //this.context.moveTo(position.x, position.y);
-        this.context.fillStyle = player.color;
-        this.context.fill();
-        //this.context.stroke();
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y);
+            ctx.arc(circleCenter.x, circleCenter.y, player.r, rs, re, player.direction === -1);
+            ctx.stroke();
+            ctx.moveTo(player.x, player.y);
+            ctx.closePath();
+        }
 
-        this.context.closePath();
 
-        //for (var n in player.arcs)
-        //{
-        //    var arc = player.arcs[n];
+        ctx.beginPath();
+        ctx.arc(position.x, position.y, 5, 0, Math.PI*2, false);
+        ctx.fill();
+        ctx.closePath();
 
-        //    this.context.beginPath();
-
-        //    this.context.closePath();
-        //}
     }
 };
 
@@ -106,15 +138,30 @@ GameHandler.prototype.calculatePosition = function(player)
     var dT = now - player.time;
 
     var x, y, a;
-    if(true || player.direction === 0) {
+    if(player.direction === 0) {
         x = player.x + Math.cos(player.a) * player.v * dT;
         y = player.y + Math.sin(player.a) * player.v * dT;
-        a = player.a;
+        return {"x": x, "y": y};
     } else {
-        
+        var fi = (Math.PI * player.v * dT) / (2* player.r);
+        var _f = function(func, angle) {
+          return player.r * func(player.a + player.direction*angle);
+        };
+        var currentCirclePos =  {
+            x: -1 * _f(Math.cos, Math.PI/2),
+            y: -1 * _f(Math.sin, Math.PI/2)
+        };
+        var futureCirclePos =  {
+            x: -1 * _f(Math.cos, Math.PI/2 + fi),
+            y: -1 * _f(Math.sin, Math.PI/2 + fi)
+        };
+
+        return {
+            "x": player.x + futureCirclePos.x - currentCirclePos.x,
+            "y": player.y + futureCirclePos.y - currentCirclePos.y
+        };
     }
 
-    return {"x": x, "y": y};
 };
 
 GameHandler.prototype.onWelcome = function(message)
@@ -153,7 +200,6 @@ GameHandler.prototype.doPong = function(id)
 GameHandler.prototype.onTurn = function(message, id, time)
 {
     var him = this.findPlayer(message.player);
-
     him.update(message.player, message.part, time);
 };
 

@@ -15,6 +15,7 @@ var GameSocketHandler = function(game, uri, name)
 GameSocketHandler.prototype.onOpen = function(event)
 {
     console.log("Recieved Open");
+    this.game.doReady();
 };
 
 GameSocketHandler.prototype.onClose = function(event)

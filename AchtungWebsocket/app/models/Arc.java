@@ -7,8 +7,9 @@ public class Arc implements Collidable
 	private Double x;
 	private Double y;
 	private Double r;
-	private Double amc;
-	private Double amcc;
+	private Double as;
+	private Double ae;
+	private Integer direction;
 
 	public Double getX()
 	{
@@ -40,27 +41,38 @@ public class Arc implements Collidable
 		this.r = r;
 	}
 
-	public Double getAmc()
+	public Double getAe()
 	{
-		return amc;
+		return ae;
 	}
 
-	public void setAmc(Double amc)
+	public void setAe(Double ae)
 	{
-		this.amc = amc;
+		this.ae = ae;
 	}
 
-	public Double getAmcc()
+	public Double getAs()
 	{
-		return amcc;
+		return as;
 	}
 
-	public void setAmcc(Double amcc)
+	public void setAs(Double as)
 	{
-		this.amcc = amcc;
+		this.as = as;
 	}
 
-	public boolean isCollision(Double x, Double y) {
+	public Integer getDirection()
+	{
+		return direction;
+	}
+
+	public void setDirection(Integer direction)
+	{
+		this.direction = direction;
+	}
+
+	public boolean isCollision(Double x, Double y)
+	{
 		return false;
 	}
 

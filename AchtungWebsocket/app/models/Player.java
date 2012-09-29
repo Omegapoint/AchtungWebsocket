@@ -11,8 +11,8 @@ import java.util.List;
 public class Player
 {
 	private static Integer PLAYER_INDEX = 0;
-	private static final Integer PLAYER_RADIUS = 20;
-	private static final String[] PLAYER_COLOR = new String[]{ "#ff0000", "#00ff00", "#0000ff", "#0ff000", "#ffff00" };
+	private static final Double PLAYER_RADIUS = 20D;
+	private static final String[] PLAYER_COLOR = new String[]{ "#ff0000", "#00ff00", "#0000ff", "#0fff00", "#ffff00" };
 
 	private final String name;
 	private final String color;
@@ -24,7 +24,8 @@ public class Player
 	private Double y;
 	private Integer direction;
 	private List<Collidable> parts;
-	
+    private boolean isReady;
+
 	public Player(String name)
 	{
 		this.name = name;
@@ -85,7 +86,7 @@ public class Player
 		this.y = y;
 	}
 
-	public Integer getR()
+	public Double getR()
 	{
 		return PLAYER_RADIUS;
 	}
@@ -109,6 +110,16 @@ public class Player
 	{
 		this.direction = direction;
 	}
+
+    public boolean isReady()
+	{
+        return isReady;
+    }
+
+    public void setReady(boolean ready)
+	{
+        isReady = ready;
+    }
 
 	@Transient
 	public List<Collidable> getParts()
@@ -145,7 +156,12 @@ public class Player
 		{
 			Arc arc = new Arc();
 
-			// TODO: Generate arc
+			arc.setX(this.getR() * Math.cos(this.getA() + this.getDirection() * Math.PI / 2) + this.getX());
+			arc.setY(this.getR() * Math.sin(this.getA() + this.getDirection() * Math.PI / 2) + this.getY());
+			arc.setR(this.getR());
+			arc.setAs(this.getA() - this.getDirection() * Math.PI / 2);
+			arc.setAe(arc.getAs() + this.getDirection() * (extrapolated.getA() - this.getA()));
+			arc.setDirection(this.getDirection());
 
 			retval = arc;
 		}

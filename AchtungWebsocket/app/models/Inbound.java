@@ -75,7 +75,24 @@ public class Inbound
 	
 	public static class Ready extends In
 	{
-		
+        private Integer sizeX;
+        private Integer sizeY;
+
+        public Integer getSizeX() {
+            return sizeX;
+        }
+
+        public void setSizeX(Integer sizeX) {
+            this.sizeX = sizeX;
+        }
+
+        public Integer getSizeY() {
+            return sizeY;
+        }
+
+        public void setSizeY(Integer sizeY) {
+            this.sizeY = sizeY;
+        }
 	}
 
 	public static class Direction extends In

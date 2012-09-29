@@ -19,8 +19,10 @@ Player.prototype.update = function(player, part, time)
     this.y = player.y;
     this.r = player.r;
     this.v = player.v;
+    this.a = player.a;
     this.time = time;
     this.direction = player.direction;
 
+    console.log(this.x, this.y);
     this.arcs.push(part);
 };

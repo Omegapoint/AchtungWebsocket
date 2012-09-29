@@ -102,8 +102,15 @@ public class Game extends UntypedActor
 		}
 		else if (message instanceof Inbound.Ready)
 		{
-			board.start();
+            board.getSizeX();
+            board.getSizeY();
 
+			player.setReady(true);
+
+            if(board.allPlayersAreReady())
+            {
+			    board.start();
+            }
 
 		}
 		else if (message instanceof Inbound.Tick)
@@ -124,8 +131,8 @@ public class Game extends UntypedActor
 			Inbound.Direction inDirection = (Inbound.Direction) message;
 			Outbound.Out<Outbound.Direction> outDirection = new Outbound.Out<Outbound.Direction>(new Outbound.Direction());
 
-			player.setDirection(inDirection.getDirection());
 			outDirection.getMessage().setPart(player.flush(board.extrapolate(player, inDirection.getTime())));
+			player.setDirection(inDirection.getDirection());
 			player.setTime(inDirection.getTime());
 
 			outDirection.getMessage().setPlayer(player);
