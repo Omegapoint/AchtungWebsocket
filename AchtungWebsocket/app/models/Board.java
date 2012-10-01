@@ -24,10 +24,6 @@ public class Board
 
 		for (Player player : players.values())
 		{
-			int random = randomGenerator.nextInt(10) + randomGenerator.nextInt();
-			double decimalRandom = randomGenerator.nextDouble();
-			double randomNumber = random + decimalRandom;
-
 			Integer x = Math.abs(randomGenerator.nextInt()) % this.getSizeX();
 			Integer y = Math.abs(randomGenerator.nextInt()) % this.getSizeY();
 
