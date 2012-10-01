@@ -3,7 +3,7 @@ var GameHandler = function()
     var self = this;
     var body = document.getElementsByTagName("body")[0];
 
-    this.name = "superdupertestplayer";//window.prompt("Give me your name!");
+    this.name = window.prompt("Give me your name!");
     this.canvas = document.getElementById("canvas");
 
     if (this.canvas.getContext)
@@ -11,7 +11,7 @@ var GameHandler = function()
         this.context = this.canvas.getContext("2d");
         this.context.canvas.width  = window.innerWidth;
         this.context.canvas.height = window.innerHeight;
-        this.socket = new GameSocketHandler(this, "ws://localhost:9000/game/connect", this.name);
+        this.socket = new GameSocketHandler(this, "ws://" + window.location.hostname + ":9000/game/connect", this.name);
         this.players = [];
 
         window.onkeyup = function(event){ if ((event.keyCode == 37) || (event.keyCode == 39)) { self.doTurn.call(self, null, 0); } };

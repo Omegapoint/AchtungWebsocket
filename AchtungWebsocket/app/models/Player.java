@@ -160,7 +160,7 @@ public class Player
 			arc.setY(this.getR() * Math.sin(this.getA() + this.getDirection() * Math.PI / 2) + this.getY());
 			arc.setR(this.getR());
 			arc.setAs(this.getA() - this.getDirection() * Math.PI / 2);
-			arc.setAe(arc.getAs() + this.getDirection() * (extrapolated.getA() - this.getA()));
+			arc.setAe(arc.getAs() + (extrapolated.getA() - this.getA()));
 			arc.setDirection(this.getDirection());
 
 			retval = arc;
