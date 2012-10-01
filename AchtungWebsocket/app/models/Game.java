@@ -102,16 +102,29 @@ public class Game extends UntypedActor
 		}
 		else if (message instanceof Inbound.Ready)
 		{
-            board.getSizeX();
-            board.getSizeY();
+			Inbound.Ready inReady = (Inbound.Ready) message;
+			Outbound.Out<Outbound.Ready> outReady = new Outbound.Out<Outbound.Ready>(new Outbound.Ready());
+
+            board.setSizeX(Math.min(inReady.getSizeX(), board.getSizeX()));
+			board.setSizeY(Math.min(inReady.getSizeY(), board.getSizeY()));
+
+			outReady.getMessage().setSizeX(board.getSizeX());
+			outReady.getMessage().setSizeY(board.getSizeY());
+
+			send(sender, outReady);
 
 			player.setReady(true);
 
             if(board.allPlayersAreReady())
             {
-			    board.start();
-            }
+				Outbound.Out<Outbound.Start> outStart = new Outbound.Out<Outbound.Start>(new Outbound.Start());
+				Date now = new Date();
 
+			    board.start(now);
+				outStart.setTime(now);
+
+				broadcast(outStart);
+            }
 		}
 		else if (message instanceof Inbound.Tick)
 		{

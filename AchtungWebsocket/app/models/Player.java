@@ -24,7 +24,7 @@ public class Player
 	private Double y;
 	private Integer direction;
 	private List<Collidable> parts;
-    private boolean isReady;
+    private boolean ready;
 
 	public Player(String name)
 	{
@@ -113,12 +113,12 @@ public class Player
 
     public boolean isReady()
 	{
-        return isReady;
+        return ready;
     }
 
     public void setReady(boolean ready)
 	{
-        isReady = ready;
+        this.ready = ready;
     }
 
 	@Transient

@@ -54,6 +54,10 @@ GameSocketHandler.prototype.onMessage = function(event)
             this.game.onJoin(message, id, time); break;
         case "Welcome":
             this.game.onWelcome(message, id, time); break;
+        case "Ready":
+            this.game.onReady(message, id, time); break;
+        case "Start":
+            this.game.onStart(message, id, time); break;
         case "Direction":
             this.game.onTurn(message, id, time); break;
         case "Leave":

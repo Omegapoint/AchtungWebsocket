@@ -13,16 +13,6 @@ var GameHandler = function()
         this.context.canvas.height = window.innerHeight;
         this.socket = new GameSocketHandler(this, "ws://" + window.location.hostname + ":9000/game/connect", this.name);
         this.players = [];
-
-        window.onkeyup = function(event){ if ((event.keyCode == 37) || (event.keyCode == 39)) { self.doTurn.call(self, null, 0); } };
-        window.onkeydown = function(event){
-            if ((event.keyCode == 37) || (event.keyCode == 39))
-            {
-                event.stopPropagation();
-                self.doTurn.call(self, null, ((event.keyCode == 37) ? -1 : 1));
-            }
-        };
-        window.setInterval(function(){ self.draw.call(self); }, 20); // 50Hz
     }
     else
     {
@@ -230,7 +220,36 @@ GameHandler.prototype.onLeave = function(message)
 
 GameHandler.prototype.doReady = function(id)
 {
-    this.socket.doMessage(id, "Ready", {});
+    this.socket.doMessage(id, "Ready", {"sizeX": this.context.canvas.width, "sizeY": this.context.canvas.height});
+};
+
+GameHandler.prototype.onReady = function(message)
+{
+    this.context.canvas.width = message.sizeX;
+    this.context.canvas.height = message.sizeY;
+};
+
+GameHandler.prototype.onStart = function(message, id, time)
+{
+    window.onkeyup = function(event)
+    {
+        if ((event.keyCode == 37) || (event.keyCode == 39))
+        {
+            self.doTurn.call(self, null, 0);
+        }
+    };
+    window.onkeydown = function(event)
+    {
+        if ((event.keyCode == 37) || (event.keyCode == 39))
+        {
+            event.stopPropagation();
+            self.doTurn.call(self, null, ((event.keyCode == 37) ? -1 : 1));
+        }
+    };
+    window.setInterval(function()
+    {
+        self.draw.call(self);
+    }, 20); // 50Hz
 };
 
 GameHandler.prototype.onDeath = function(message)
