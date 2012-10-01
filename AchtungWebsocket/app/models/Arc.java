@@ -76,4 +76,6 @@ public class Arc implements Collidable
 		return false;
 	}
 
+	
+	
 }

@@ -85,30 +85,24 @@ public class Board
 	{
 		List<Player> collided = new ArrayList<Player>();
 
-		// TODO: Detect collisions and add to list
+		// TODO: Start (?) with checking for collision with the "walls" of the board
 
-		// Collect all parts
 		List<Collidable> allParts = new ArrayList<Collidable>();
 		for (Player player : this.players.values())
 		{
 			allParts.addAll(player.getParts());
 		}
-
-		// TODO: Need to add the walls to allParts
-
-		for (Player player : this.players.values())
-		{
-			for (Collidable collidable : allParts)
-			{
-				if (collidable.isCollision(player.getX(), player.getY()))
+		
+		for (Player player : this.players.values()) {
+			for (Collidable collidable : allParts) {
+				if(collidable.isCollision(player.getX(), player.getY()))
 				{
 					collided.add(player);
 				}
 			}
 		}
 
-
-		return collided;
+return collided;
 	}
 
 	public Map<String, Player> getPlayers()
