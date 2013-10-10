@@ -55,7 +55,16 @@ public class Board
 
 	public PlayerState extrapolate(Player player, Date time)
 	{
-		PlayerState state = new PlayerState();
+        PlayerState state = new PlayerState();
+
+        if (player.getTime() == null) {
+            state.setA(player.getA());
+            state.setX(player.getX());
+            state.setY(player.getY());
+
+            return state;
+        }
+
 		Long dT = time.getTime() - player.getTime().getTime();
 
 		if (player.getDirection() == 0)
@@ -81,7 +90,7 @@ public class Board
 		List<Player> collided = new ArrayList<Player>();
 
 		// TODO: Start (?) with checking for collision with the "walls" of the board
-		for (Player player : this.players.values())
+		/*for (Player player : this.players.values())
 		{
 			if ((player.getX() < 0) || (player.getX() > this.getSizeX()))
 			{
@@ -108,7 +117,7 @@ public class Board
 					collided.add(player);
 				}
 			}
-		}
+		}*/
 
 		return collided;
 	}

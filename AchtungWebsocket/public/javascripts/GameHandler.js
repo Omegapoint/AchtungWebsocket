@@ -231,6 +231,8 @@ GameHandler.prototype.onReady = function(message)
 
 GameHandler.prototype.onStart = function(message, id, time)
 {
+    var self = this;
+
     window.onkeyup = function(event)
     {
         if ((event.keyCode == 37) || (event.keyCode == 39))
