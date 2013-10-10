@@ -16,6 +16,15 @@ var GameHandler = function()
     {
         body.appendChild(document.createTextNode("HTML5 unsupported in browser."));
     }
+
+    this.templates = {};
+
+    this.registerTemplate("player-list-template");
+};
+
+GameHandler.prototype.registerTemplate = function (name) {
+    var source   = $("#" + name).html();
+    this.templates[name] = Handlebars.compile(source);
 };
 
 GameHandler.prototype.findPlayer = function(player)
@@ -85,7 +94,7 @@ GameHandler.prototype.drawPlayers = function()
             ctx.closePath();
         } else {
             var now = Date.now();
-            var dT = now - player.time;
+            var dT = now - player.time - this.latency;;
             var fi = ((Math.PI * player.v * dT) / (2* player.r)) % (2 * Math.PI);
             var rs = player.a + -player.direction * Math.PI/2;
             var re = rs + player.direction * fi;
@@ -123,7 +132,7 @@ GameHandler.prototype.drawPlayers = function()
 GameHandler.prototype.calculatePosition = function(player)
 {
     var now = Date.now();
-    var dT = now - player.time;
+    var dT = now - player.time - this.latency;
 
     var x, y, a;
     if(player.direction === 0) {
@@ -154,15 +163,29 @@ GameHandler.prototype.calculatePosition = function(player)
 
 GameHandler.prototype.onWelcome = function(message)
 {
+    var self = this;
+
     for (var player in message.players)
     {
         this.players.push(new Player(message.players[player]))
     }
+
+    $("body").on("click", "#start-button", function() {
+        self.doReady();
+    });
+    this.updatePlayerList();
+
 };
+
+GameHandler.prototype.updatePlayerList = function()
+{
+    $("#online_players").html(this.templates["player-list-template"]({"players": this.players}));
+}
 
 GameHandler.prototype.onJoin = function(message)
 {
-    this.players.push(new Player(message.player))
+    this.players.push(new Player(message.player));
+    this.updatePlayerList();
 };
 
 GameHandler.prototype.onPing = function(message, id)
@@ -207,24 +230,33 @@ GameHandler.prototype.doTurn = function(id, direction)
 
 GameHandler.prototype.onLeave = function(message)
 {
+    var playersLeft = [];
+
     for (var i in this.players)
     {
-        if (this.players[i].name == message.player.name)
+        if (this.players[i].name !== message.player.name)
         {
-            delete this.players[i];
+            playersLeft.push(this.players[i]);
         }
     }
+
+    this.players = playersLeft;
+
+    this.updatePlayerList();
 };
 
 GameHandler.prototype.doReady = function(id)
 {
-    this.socket.doMessage(id, "Ready", {"sizeX": window.innerWidth, "sizeY": window.innerHeight});
+    var width = window.innerWidth - $("aside#online_players").width();
+    var height = window.innerHeight;
+
+    this.socket.doMessage(id, "Ready", {"sizeX": width, "sizeY": height});
 };
 
 GameHandler.prototype.onReady = function(message)
 {
     this.context.canvas.width = message.sizeX;
-    this.context.canvas.height = message.sizeY;
+     this.context.canvas.height = message.sizeY;
 };
 
 GameHandler.prototype.onStart = function(message, id, time)
@@ -264,6 +296,7 @@ GameHandler.prototype.onDeath = function(message)
     {
         this.findPlayer(message.players[i]).alive = false;
     }
+
 };
 
 GameHandler.prototype.onUpdate = function(message)
@@ -279,4 +312,6 @@ GameHandler.prototype.onUpdate = function(message)
         this.findPlayer(message.teleportedPlayers[i]).y = message.teleportedPlayers[i].y;
         this.findPlayer(message.teleportedPlayers[i]).time = message.teleportedPlayers[i].time;
     }
+
+
 };

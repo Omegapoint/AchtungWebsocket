@@ -9,14 +9,30 @@
         <script type="text/javascript" src='@routes.Assets.at("javascripts/GameSocketHandler.js")'></script>
         <script type="text/javascript" src='@routes.Assets.at("javascripts/GameHandler.js")'></script>
         <script type="text/javascript" src='@routes.Assets.at("javascripts/Player.js")'></script>
+        <script type="text/javascript" src='@routes.Assets.at("javascripts/jquery-1.7.1.min.js")'></script>
+        <script type="text/javascript" src='@routes.Assets.at("javascripts/handlebars.js")'></script>
+
+        <script id="player-list-template" type="text/x-handlebars-template">
+            <ul>
+                {{#each players}}
+                    <li style="color:{{color}};">{{name}}</li>
+                {{/each}}
+            </ul>
+
+            <button id="start-button">Start</button>
+
+        </script>
     </head>
     <body>
+        <aside id=online_players></aside>
         <canvas id="canvas">
             It seems that your browser does not support the "canvas" tag.
             Please upgrade to a newer or better browser...
         </canvas>
         <script defer="defer">
-            var game = new GameHandler();
+            $(document).ready(function() {
+                window.game = new GameHandler();
+            });
         </script>
     </body>
 </html>
