@@ -16,6 +16,15 @@ var GameHandler = function()
     {
         body.appendChild(document.createTextNode("HTML5 unsupported in browser."));
     }
+
+    this.templates = {};
+
+    this.registerTemplate("player-list-template");
+};
+
+GameHandler.prototype.registerTemplate = function (name) {
+    var source   = $("#" + name).html();
+    this.templates[name] = Handlebars.compile(source);
 };
 
 GameHandler.prototype.findPlayer = function(player)
@@ -154,15 +163,29 @@ GameHandler.prototype.calculatePosition = function(player)
 
 GameHandler.prototype.onWelcome = function(message)
 {
+    var self = this;
+
     for (var player in message.players)
     {
         this.players.push(new Player(message.players[player]))
     }
+
+    $("body").on("click", "#start-button", function() {
+        self.doReady();
+    });
+    this.updatePlayerList();
+
 };
+
+GameHandler.prototype.updatePlayerList = function()
+{
+    $("#online_players").html(this.templates["player-list-template"]({"players": this.players}));
+}
 
 GameHandler.prototype.onJoin = function(message)
 {
-    this.players.push(new Player(message.player))
+    this.players.push(new Player(message.player));
+    this.updatePlayerList();
 };
 
 GameHandler.prototype.onPing = function(message, id)
@@ -207,18 +230,27 @@ GameHandler.prototype.doTurn = function(id, direction)
 
 GameHandler.prototype.onLeave = function(message)
 {
+    var playersLeft = [];
+
     for (var i in this.players)
     {
-        if (this.players[i].name == message.player.name)
+        if (this.players[i].name !== message.player.name)
         {
-            delete this.players[i];
+            playersLeft.push(this.players[i]);
         }
     }
+
+    this.players = playersLeft;
+
+    this.updatePlayerList();
 };
 
 GameHandler.prototype.doReady = function(id)
 {
-    this.socket.doMessage(id, "Ready", {"sizeX": window.innerWidth, "sizeY": window.innerHeight});
+    var width = window.innerWidth - $("aside#online_players").width();
+    var height = window.innerHeight;
+
+    this.socket.doMessage(id, "Ready", {"sizeX": width, "sizeY": height});
 };
 
 GameHandler.prototype.onReady = function(message)
@@ -264,4 +296,5 @@ GameHandler.prototype.onDeath = function(message)
     {
         this.findPlayer(message.players[i]).alive = false;
     }
+
 };

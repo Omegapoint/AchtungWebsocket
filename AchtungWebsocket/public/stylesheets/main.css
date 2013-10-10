@@ -8,7 +8,14 @@ body
     background-color: gray;
 }
 canvas {
+    float: left;
     margin: 0;
     padding: 0;
     background-color: white;
+}
+aside {
+    float: right;
+    width: 200px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
