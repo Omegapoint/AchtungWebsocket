@@ -42,6 +42,8 @@ GameSocketHandler.prototype.onMessage = function(event)
     var action = data.action;
     var message = data.message;
 
+    this.game.latency = Date.now() - data.time;
+
     console.log("Recieved " + action);
 
     switch(action)
