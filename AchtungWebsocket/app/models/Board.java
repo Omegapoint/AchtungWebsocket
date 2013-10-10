@@ -8,8 +8,8 @@ public class Board
 {
 	private final Map<String, Player> players = new HashMap<String, Player>();
 
-	private Integer sizeX = 800;
-	private Integer sizeY = 600;
+	private Integer sizeX = Integer.MAX_VALUE;
+	private Integer sizeY = Integer.MAX_VALUE;
 	private BoardState state = BoardState.WAITING;
 
 	public enum BoardState

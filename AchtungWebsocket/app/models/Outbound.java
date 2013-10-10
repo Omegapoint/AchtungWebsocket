@@ -124,16 +124,27 @@ public class Outbound
 
 	public static class Start
 	{
-        private String message;
+        private Integer sizeX;
+        private Integer sizeY;
 
-        public String getMessage()
+        public Integer getSizeX()
         {
-            return message;
+            return sizeX;
         }
 
-        public void setMessage(String message)
+        public void setSizeX(Integer sizeX)
         {
-            this.message = message;
+            this.sizeX = sizeX;
+        }
+
+        public Integer getSizeY()
+        {
+            return sizeY;
+        }
+
+        public void setSizeY(Integer sizeY)
+        {
+            this.sizeY = sizeY;
         }
 	}
 

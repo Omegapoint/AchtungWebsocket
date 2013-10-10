@@ -122,6 +122,8 @@ public class Game extends UntypedActor
 
 			    board.start(now);
 				outStart.setTime(now);
+                outStart.getMessage().setSizeX(board.getSizeX());
+                outStart.getMessage().setSizeY(board.getSizeY());
 
 				broadcast(outStart);
             }

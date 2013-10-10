@@ -9,8 +9,6 @@ var GameHandler = function()
     if (this.canvas.getContext)
     {
         this.context = this.canvas.getContext("2d");
-        this.context.canvas.width  = window.innerWidth;
-        this.context.canvas.height = window.innerHeight;
         this.socket = new GameSocketHandler(this, "ws://" + window.location.hostname + ":9000/game/connect", this.name);
         this.players = [];
     }
@@ -220,7 +218,7 @@ GameHandler.prototype.onLeave = function(message)
 
 GameHandler.prototype.doReady = function(id)
 {
-    this.socket.doMessage(id, "Ready", {"sizeX": this.context.canvas.width, "sizeY": this.context.canvas.height});
+    this.socket.doMessage(id, "Ready", {"sizeX": window.innerWidth, "sizeY": window.innerHeight});
 };
 
 GameHandler.prototype.onReady = function(message)
@@ -231,6 +229,12 @@ GameHandler.prototype.onReady = function(message)
 
 GameHandler.prototype.onStart = function(message, id, time)
 {
+    this.context.canvas.width  = message.sizeX;
+    this.context.canvas.height = message.sizeY;
+
+    console.log(window.innerWidth + " = " + message.sizeX);
+    console.log(window.innerHeight + " = " + message.sizeY);
+
     var self = this;
 
     window.onkeyup = function(event)
