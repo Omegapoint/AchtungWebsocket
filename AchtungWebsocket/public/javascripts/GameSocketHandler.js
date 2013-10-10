@@ -66,8 +66,8 @@ GameSocketHandler.prototype.onMessage = function(event)
             this.game.onLeave(message, id, time); break;
         case "Death":
             this.game.onDeath(message, id, time); break;
-        case "Update":
-            this.game.onUpdate(message, id, time); break;
+        case "Teleport":
+            this.game.onTeleport(message, id, time); break;
         default:
             console.log(data);
     }

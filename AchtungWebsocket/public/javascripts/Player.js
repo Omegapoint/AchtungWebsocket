@@ -22,7 +22,16 @@ Player.prototype.update = function(player, part, time)
     this.a = player.a;
     this.time = time;
     this.direction = player.direction;
+    this.teleportX = player.teleportX;
+    this.teleportY = player.teleportY;
 
     console.log(this.x, this.y);
     this.arcs.push(part);
 };
+
+Player.prototype.teleport = function(player)
+{
+    this.x = this.teleportX;
+    this.y = this.teleportY;
+}
+

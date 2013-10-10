@@ -22,6 +22,8 @@ public class Player
 	private Double v;
 	private Double x;
 	private Double y;
+    private Double teleportX;
+    private Double teleportY;
 	private Integer direction;
 	private List<Collidable> parts;
     private boolean ready;
@@ -86,6 +88,26 @@ public class Player
 		this.y = y;
 	}
 
+    public Double getTeleportX()
+    {
+        return teleportX;
+    }
+
+    public void setTeleportX(Double teleportX)
+    {
+        this.teleportX = teleportX;
+    }
+
+    public Double getTeleportY()
+    {
+        return teleportY;
+    }
+
+    public void setTeleportY(Double teleportY)
+    {
+        this.teleportY = teleportY;
+    }
+
 	public Double getR()
 	{
 		return PLAYER_RADIUS;
@@ -138,6 +160,12 @@ public class Player
 			throw new IllegalArgumentException("Can only add Line or Arc to part list.");
 		}
 	}
+
+    public void teleport()
+    {
+        this.setX(this.getTeleportX());
+        this.setY(this.getTeleportY());
+    }
 
 	public Object flush(Board.PlayerState extrapolated)
 	{

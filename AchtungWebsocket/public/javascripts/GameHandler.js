@@ -299,19 +299,10 @@ GameHandler.prototype.onDeath = function(message)
 
 };
 
-GameHandler.prototype.onUpdate = function(message)
+GameHandler.prototype.onTeleport = function(message, id, time)
 {
-    for (var i in message.deadPlayers)
-    {
-        this.findPlayer(message.deadPlayers[i]).alive = false;
-    }
-
-    for (var i in message.teleportedPlayers)
-    {
-        this.findPlayer(message.teleportedPlayers[i]).x = message.teleportedPlayers[i].x;
-        this.findPlayer(message.teleportedPlayers[i]).y = message.teleportedPlayers[i].y;
-        this.findPlayer(message.teleportedPlayers[i]).time = message.teleportedPlayers[i].time;
-    }
-
-
+    var him = this.findPlayer(message.player);
+    him.update(message.player, message.part, time);
+    him.teleport(message.player);
 };
+

@@ -128,29 +128,29 @@ public class Game extends UntypedActor
 		}
 		else if (message instanceof Inbound.Tick)
 		{
-			Outbound.Out<Outbound.Update> outUpdate = new Outbound.Out<Outbound.Update>(new Outbound.Update());
             board.tick();
             Date d = new Date();
 
             List<Player> deadPlayers = new ArrayList<Player>();
             List<Player> teleportedPlayers = new ArrayList<Player>();
-            board.update(deadPlayers, teleportedPlayers, d );
-
-            outUpdate.getMessage().setDeadPlayers(deadPlayers);
-            outUpdate.getMessage().setTeleportedPlayers(teleportedPlayers);
+            board.update(deadPlayers, teleportedPlayers, d);
 
             for(Player p : teleportedPlayers)
             {
-                Outbound.Out<Outbound.Direction> outDirection = new Outbound.Out<Outbound.Direction>(new Outbound.Direction());
-                System.out.println("tjoflot");
-                outDirection.getMessage().setPart(p.flush(board.extrapolate(p,d)));
-                outDirection.getMessage().setPlayer(p);
-                broadcast(outDirection);
+                Outbound.Out<Outbound.Teleport> outTeleport = new Outbound.Out<Outbound.Teleport>(new Outbound.Teleport());
+                outTeleport.getMessage().setPart(p.flush(board.extrapolate(p,d)));
+                outTeleport.getMessage().setPlayer(p);
+                p.setTime(d);
+                broadcast(outTeleport);
+
+                p.teleport();
             }
 
-            if (!outUpdate.getMessage().getDeadPlayer().isEmpty() || !outUpdate.getMessage().getTeleportedPlayers().isEmpty())
+            if (!deadPlayers.isEmpty())
             {
-                broadcast(outUpdate);
+                Outbound.Out<Outbound.Death> outDeath = new Outbound.Out<Outbound.Death>(new Outbound.Death());
+                outDeath.getMessage().setPlayers(deadPlayers);
+                broadcast(outDeath);
             }
 		}
 		else if (message instanceof Inbound.Direction)

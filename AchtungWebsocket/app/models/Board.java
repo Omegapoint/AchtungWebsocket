@@ -91,45 +91,38 @@ public class Board
             return; // collided;
         }
 
-		// TODO: Start (?) with checking for collision with the "walls" of the board
-		for (Player player : this.players.values())
+    	for (Player player : this.players.values())
 		{
             PlayerState state = extrapolate(player, time);
-            if ( state.getX() < 0)
+            Boolean teleported = false;
+            player.setTeleportX(state.getX());
+            player.setTeleportY(state.getY());
+
+            if (state.getX() < 0)
             {
-                player.setX((double)this.getSizeX());
-                player.setTime(time);
-                teleportedPlayers.add(player);
+                player.setTeleportX((double)this.getSizeX());
+                teleported = true;
             }
             if (state.getX() > this.getSizeX())
             {
-                player.setX(0.0);
-                player.setTime(time);
-                teleportedPlayers.add(player);
+                player.setTeleportX(0.0);
+                teleported = true;
             }
             if (state.getY() < 0)
             {
-                player.setY((double)this.getSizeY());
-                player.setTime(time);
-                teleportedPlayers.add(player);
+                player.setTeleportY((double)this.getSizeY());
+                teleported = true;
             }
             if (state.getY() > this.getSizeY())
             {
-                player.setY(0.0);
-                player.setTime(time);
-                teleportedPlayers.add(player);
+                player.setTeleportY(0.0);
+                teleported = true;
             }
 
-			/*if ((player.getX() < 0) || (player.getX() > this.getSizeX()))
-			{
-				collided.add(player);
-			}
-			else if ((player.getY() < 0) || (player.getY() > this.getSizeY()))
-			{
-				collided.add(player);
-			}*/
-		}
-           /*
+            if (teleported)
+                teleportedPlayers.add(player);
+        }
+
 		List<Collidable> allParts = new ArrayList<Collidable>();
 		for (Player player : this.players.values())
 		{
@@ -142,12 +135,10 @@ public class Board
 			{
 				if (collidable.isCollision(player.getX(), player.getY()))
 				{
-					collided.add(player);
+					deadPlayers.add(player);
 				}
 			}
-		}*/
-
-		return; // collided;
+		}
 	}
 
 	public Map<String, Player> getPlayers()

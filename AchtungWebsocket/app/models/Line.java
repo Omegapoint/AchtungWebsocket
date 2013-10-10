@@ -64,6 +64,9 @@ public class Line implements Collidable
 	
 	public boolean isCollision(Double x, Double y)
 	{
+        // Tips från coachen, använd homogena koordinater.
+
+
 		/* Försökte skapa en rektangel runt linjen, för att få med en felmarginal, och sedan se om punkten ligger i rektangeln.
 		 * förmodligen onödigt komplicerat...
 
