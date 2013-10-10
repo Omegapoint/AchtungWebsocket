@@ -85,23 +85,51 @@ public class Board
 		return state;
 	}
 
-	public List<Player> update()
+	public void update(List<Player> deadPlayers, List<Player> teleportedPlayers, Date time)
 	{
-		List<Player> collided = new ArrayList<Player>();
+        if (state != BoardState.RUNNING) {
+            return; // collided;
+        }
 
 		// TODO: Start (?) with checking for collision with the "walls" of the board
-		/*for (Player player : this.players.values())
+		for (Player player : this.players.values())
 		{
-			if ((player.getX() < 0) || (player.getX() > this.getSizeX()))
+            PlayerState state = extrapolate(player, time);
+            if ( state.getX() < 0)
+            {
+                player.setX((double)this.getSizeX());
+                player.setTime(time);
+                teleportedPlayers.add(player);
+            }
+            if (state.getX() > this.getSizeX())
+            {
+                player.setX(0.0);
+                player.setTime(time);
+                teleportedPlayers.add(player);
+            }
+            if (state.getY() < 0)
+            {
+                player.setY((double)this.getSizeY());
+                player.setTime(time);
+                teleportedPlayers.add(player);
+            }
+            if (state.getY() > this.getSizeY())
+            {
+                player.setY(0.0);
+                player.setTime(time);
+                teleportedPlayers.add(player);
+            }
+
+			/*if ((player.getX() < 0) || (player.getX() > this.getSizeX()))
 			{
 				collided.add(player);
 			}
 			else if ((player.getY() < 0) || (player.getY() > this.getSizeY()))
 			{
 				collided.add(player);
-			}
+			}*/
 		}
-
+           /*
 		List<Collidable> allParts = new ArrayList<Collidable>();
 		for (Player player : this.players.values())
 		{
@@ -119,7 +147,7 @@ public class Board
 			}
 		}*/
 
-		return collided;
+		return; // collided;
 	}
 
 	public Map<String, Player> getPlayers()

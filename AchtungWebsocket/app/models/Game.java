@@ -8,9 +8,7 @@ import akka.util.Duration;
 import play.libs.Akka;
 import play.libs.Json;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Game extends UntypedActor
@@ -130,16 +128,30 @@ public class Game extends UntypedActor
 		}
 		else if (message instanceof Inbound.Tick)
 		{
-			Outbound.Out<Outbound.Death> outDeath = new Outbound.Out<Outbound.Death>(new Outbound.Death());
+			Outbound.Out<Outbound.Update> outUpdate = new Outbound.Out<Outbound.Update>(new Outbound.Update());
+            board.tick();
+            Date d = new Date();
 
-			board.tick();
+            List<Player> deadPlayers = new ArrayList<Player>();
+            List<Player> teleportedPlayers = new ArrayList<Player>();
+            board.update(deadPlayers, teleportedPlayers, d );
 
-			outDeath.getMessage().setPlayers(board.update());
+            outUpdate.getMessage().setDeadPlayers(deadPlayers);
+            outUpdate.getMessage().setTeleportedPlayers(teleportedPlayers);
 
-			if (!outDeath.getMessage().getPlayers().isEmpty())
-			{
-				broadcast(outDeath);
-			}
+            for(Player p : teleportedPlayers)
+            {
+                Outbound.Out<Outbound.Direction> outDirection = new Outbound.Out<Outbound.Direction>(new Outbound.Direction());
+                System.out.println("tjoflot");
+                outDirection.getMessage().setPart(p.flush(board.extrapolate(p,d)));
+                outDirection.getMessage().setPlayer(p);
+                broadcast(outDirection);
+            }
+
+            if (!outUpdate.getMessage().getDeadPlayer().isEmpty() || !outUpdate.getMessage().getTeleportedPlayers().isEmpty())
+            {
+                broadcast(outUpdate);
+            }
 		}
 		else if (message instanceof Inbound.Direction)
 		{

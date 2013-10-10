@@ -203,6 +203,47 @@ public class Outbound
 			this.players.addAll(players);
 		}
 	}
+
+    public static class OutOfBound
+    {
+        private final List<Player> players = new ArrayList<Player>();
+
+        public List<Player> getPlayers()
+        {
+            return players;
+        }
+
+        public void setPlayers(List<Player> players)
+        {
+            this.players.addAll(players);
+        }
+    }
+
+    public static class Update
+    {
+        private final List<Player> deadPlayers = new ArrayList<Player>();
+        private final List<Player> teleportedPlayers = new ArrayList<Player>();
+
+        public List<Player> getDeadPlayer()
+        {
+            return deadPlayers;
+        }
+
+        public void setDeadPlayers(List<Player> players)
+        {
+            this.deadPlayers.addAll(players);
+        }
+
+        public List<Player> getTeleportedPlayers()
+        {
+            return teleportedPlayers;
+        }
+
+        public void setTeleportedPlayers(List<Player> players)
+        {
+            this.teleportedPlayers.addAll(players);
+        }
+    }
 	
 	public static class Error
 	{
