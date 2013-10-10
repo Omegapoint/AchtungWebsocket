@@ -85,7 +85,7 @@ GameHandler.prototype.drawPlayers = function()
             ctx.closePath();
         } else {
             var now = Date.now();
-            var dT = now - player.time;
+            var dT = now - player.time - this.latency;;
             var fi = ((Math.PI * player.v * dT) / (2* player.r)) % (2 * Math.PI);
             var rs = player.a + -player.direction * Math.PI/2;
             var re = rs + player.direction * fi;
@@ -123,7 +123,7 @@ GameHandler.prototype.drawPlayers = function()
 GameHandler.prototype.calculatePosition = function(player)
 {
     var now = Date.now();
-    var dT = now - player.time;
+    var dT = now - player.time - this.latency;
 
     var x, y, a;
     if(player.direction === 0) {
@@ -224,7 +224,7 @@ GameHandler.prototype.doReady = function(id)
 GameHandler.prototype.onReady = function(message)
 {
     this.context.canvas.width = message.sizeX;
-    this.context.canvas.height = message.sizeY;
+     this.context.canvas.height = message.sizeY;
 };
 
 GameHandler.prototype.onStart = function(message, id, time)
