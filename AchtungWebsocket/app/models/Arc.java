@@ -1,6 +1,7 @@
 package models;
 
 import models.iface.Collidable;
+import java.util.Date;
 
 public class Arc implements Collidable
 {
@@ -71,8 +72,8 @@ public class Arc implements Collidable
 		this.direction = direction;
 	}
 
-	public boolean isCollision(Double x, Double y)
-	{
+	public boolean isCollision(Double x, Double y, Date now)
+    {
 		return false;
 	}
 

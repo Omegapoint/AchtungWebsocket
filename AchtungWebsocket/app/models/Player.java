@@ -167,9 +167,9 @@ public class Player
         this.setY(this.getTeleportY());
     }
 
-	public Object flush(Board.PlayerState extrapolated)
+	public Collidable flush(Board.PlayerState extrapolated)
 	{
-		Object retval =  null;
+		Collidable retval =  null;
 
 		if (this.direction == 0) // Line
 		{

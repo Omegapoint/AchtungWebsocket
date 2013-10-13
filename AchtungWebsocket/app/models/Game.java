@@ -5,6 +5,7 @@ import akka.actor.Cancellable;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
 import akka.util.Duration;
+import models.iface.Collidable;
 import play.libs.Akka;
 import play.libs.Json;
 
@@ -138,8 +139,10 @@ public class Game extends UntypedActor
             for(Player p : teleportedPlayers)
             {
                 Outbound.Out<Outbound.Teleport> outTeleport = new Outbound.Out<Outbound.Teleport>(new Outbound.Teleport());
-                outTeleport.getMessage().setPart(p.flush(board.extrapolate(p,d)));
+                Collidable part = p.flush(board.extrapolate(p,d));
+                outTeleport.getMessage().setPart(part);
                 outTeleport.getMessage().setPlayer(p);
+                p.addPart(part);
                 p.setTime(d);
                 broadcast(outTeleport);
 
@@ -158,33 +161,34 @@ public class Game extends UntypedActor
 			Inbound.Direction inDirection = (Inbound.Direction) message;
 			Outbound.Out<Outbound.Direction> outDirection = new Outbound.Out<Outbound.Direction>(new Outbound.Direction());
 
-			outDirection.getMessage().setPart(player.flush(board.extrapolate(player, inDirection.getTime())));
-			player.setDirection(inDirection.getDirection());
+            Collidable part = player.flush(board.extrapolate(player, inDirection.getTime()));
+			outDirection.getMessage().setPart(part);
+            player.setDirection(inDirection.getDirection());
 			player.setTime(inDirection.getTime());
-
+            player.addPart(part);
 			outDirection.getMessage().setPlayer(player);
 
 			broadcast(outDirection);
 		}
 		else if (message instanceof Inbound.Ping)
 		{
-			final Inbound.Ping inPing = (Inbound.Ping) message; 
+			final Inbound.Ping inPing = (Inbound.Ping) message;
 			final Outbound.Out<Outbound.Ping> outPing = new Outbound.Out<Outbound.Ping>(new Outbound.Ping());
-			
+
 			broadcastAndCollect(outPing, inPing.getSender(), new ICallback<Outbound.Out>()
 			{
 				@Override
 				public Outbound.Out execute(Collector collector)
 				{
 					Outbound.Out<Outbound.Pong> outPong = new Outbound.Out<Outbound.Pong>(new Outbound.Pong());
-					
+
 					outPong.setId(inPing.getId());
 
 					for (Inbound.In in : collector.getResponses())
 					{
 						outPong.getMessage().getPlayers().add(in.getSender().getPlayer());
 					}
-					
+
 					return outPong;
 				}
 			});

@@ -61,7 +61,6 @@ public class Board
             state.setA(player.getA());
             state.setX(player.getX());
             state.setY(player.getY());
-
             return state;
         }
 
@@ -76,7 +75,6 @@ public class Board
 		else
 		{
 			Double fi = (player.getDirection() * Math.PI * player.getV() * dT) / (2 * player.getR());
-
 			state.setA((player.getA() + fi) % (2 * Math.PI));
 			state.setX(-1 * player.getR() * Math.cos(player.getA() + (player.getDirection() * Math.PI / 2) + fi) + player.getR() * Math.cos(player.getA() + player.getDirection() * Math.PI / 2) + player.getX());
 			state.setY(-1 * player.getR() * Math.sin(player.getA() + (player.getDirection() * Math.PI / 2) + fi) + player.getR() * Math.sin(player.getA() + player.getDirection() * Math.PI / 2) + player.getY());
@@ -88,7 +86,7 @@ public class Board
 	public void update(List<Player> deadPlayers, List<Player> teleportedPlayers, Date time)
 	{
         if (state != BoardState.RUNNING) {
-            return; // collided;
+            return;
         }
 
     	for (Player player : this.players.values())
@@ -131,12 +129,14 @@ public class Board
 
 		for (Player player : this.players.values())
 		{
+            PlayerState state = extrapolate(player, time);
 			for (Collidable collidable : allParts)
 			{
-				if (collidable.isCollision(player.getX(), player.getY()))
+				if (collidable.isCollision(state.getX(), state.getY(), time))
 				{
-					deadPlayers.add(player);
-				}
+                    deadPlayers.add(player);
+                    System.out.println("Player " + player.getName() + "died.");
+                }
 			}
 		}
 	}

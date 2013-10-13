@@ -94,7 +94,7 @@ GameHandler.prototype.drawPlayers = function()
             ctx.closePath();
         } else {
             var now = Date.now();
-            var dT = now - player.time - this.latency;;
+            var dT = now - player.time - this.latency;
             var fi = ((Math.PI * player.v * dT) / (2* player.r)) % (2 * Math.PI);
             var rs = player.a + -player.direction * Math.PI/2;
             var re = rs + player.direction * fi;
@@ -114,7 +114,6 @@ GameHandler.prototype.drawPlayers = function()
             ctx.moveTo(player.x, player.y);
             ctx.closePath();
         }
-
 
         ctx.beginPath();
         ctx.arc(position.x, position.y, 5, 0, Math.PI*2, false);

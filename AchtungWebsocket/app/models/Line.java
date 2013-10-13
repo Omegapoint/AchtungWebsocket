@@ -1,6 +1,7 @@
 package models;
 
 import models.iface.Collidable;
+import java.util.Date;
 
 public class Line implements Collidable
 {
@@ -8,11 +9,12 @@ public class Line implements Collidable
 	private Double y;
 	private Double dx;
 	private Double dy;
+    private Date created;
 
 	public Line()
 	{
-		
-	}
+        this.created = new Date();
+    }
 	
 	public Line(Double x, Double y, Double dx, Double dy)
 	{
@@ -20,6 +22,7 @@ public class Line implements Collidable
 		this.y = y;
 		this.dx = dx;
 		this.dy = dy;
+        this.created = new Date();
 	}
 	
 	public Double getX()
@@ -61,39 +64,37 @@ public class Line implements Collidable
 	{
 		this.dy = dy;
 	}
+
+    public Date getCreationDate()
+    {
+        return created;
+    }
 	
-	public boolean isCollision(Double x, Double y)
+	public boolean isCollision(Double x, Double y, Date now)
 	{
-        // Tips från coachen, använd homogena koordinater.
+        final Integer timeThreshold = 1000;
+        final Double distanceThreshold = 6.0;
 
+        if (now.getTime() - created.getTime() < timeThreshold)
+            return false;
 
-		/* Försökte skapa en rektangel runt linjen, för att få med en felmarginal, och sedan se om punkten ligger i rektangeln.
-		 * förmodligen onödigt komplicerat...
+        // http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+        Double sq_sum = this.getDx() * this.getDx() + this.getDy() * this.getDy();
+        Double u = ((x-this.getX())*this.getDx() + (y-this.getY())*this.getDy())/sq_sum;
+        u = clamp(u, 0.0, 1.0);
 
-		Double b = 4.0;
-		Double microY = b/2 * Math.asin(Math.tan(dy/dx));
-		Double microX = b/2 * Math.acos(Math.tan(dy/dx));
-		
-		Double p1x = x + microX;
-		Double p1y = y + microY;
-		Double p2x = x - microX;
-		Double p2y = y - microY;
-		Double p3x = x + dx + microX;
-		Double p3y = y + dy + microY;
-		Double p4x = x + dx - microX;
-		Double p4y = y + dy - microY;
-	
-		*/
+        Double xx = this.getX() + u * this.getDx();
+        Double yy = this.getY() + u * this.getDy();
 
-		Double k1 = this.dx/this.dy;
-		Double k2 = (x-this.x)/(y-this.y);
-		
-		// Att kolla om de båda lutningarna är exakt den samma kommer bli problem. Det måste till en felmarginal.
-		// Felmarginalen måste i sin tur vara rätt avvägd så att man inte krockar för att man bara är nära linjen. 
-		if(k1.equals(k2))
-		{
-			return this.x <= x && x <= this.x+this.dx && this.y <= y && y <= this.y+this.dy;
-		}
-		return false;
+        Double dx = xx - x;
+        Double dy = yy - y;
+        Double distance = Math.sqrt(dx*dx + dy*dy);
+
+        return (distance < distanceThreshold);
 	}
+
+    private Double clamp(Double input, Double min, Double max)
+    {
+        return Math.max(Math.min(input, max), min);
+    }
 }
