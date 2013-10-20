@@ -91,8 +91,12 @@ public class Board
 
     	for (Player player : this.players.values())
 		{
+            if (!player.isAlive())
+                continue;
+
             PlayerState state = extrapolate(player, time);
             Boolean teleported = false;
+
             player.setTeleportX(state.getX());
             player.setTeleportY(state.getY());
 
@@ -134,7 +138,10 @@ public class Board
 			{
 				if (collidable.isCollision(state.getX(), state.getY(), time))
 				{
+                    player.setAlive(false);
+                    player.clearParts();
                     deadPlayers.add(player);
+
                     System.out.println("Player " + player.getName() + "died.");
                 }
 			}

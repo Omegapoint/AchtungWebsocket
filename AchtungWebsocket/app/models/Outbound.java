@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Collection;
 
 public class Outbound
 {
@@ -126,6 +127,7 @@ public class Outbound
 	{
         private Integer sizeX;
         private Integer sizeY;
+        private Collection<Player> players;
 
         public Integer getSizeX()
         {
@@ -145,6 +147,16 @@ public class Outbound
         public void setSizeY(Integer sizeY)
         {
             this.sizeY = sizeY;
+        }
+
+        public void setPlayers(Collection<Player> players)
+        {
+            this.players = players;
+        }
+
+        public Collection<Player> getPlayers()
+        {
+            return players;
         }
 	}
 

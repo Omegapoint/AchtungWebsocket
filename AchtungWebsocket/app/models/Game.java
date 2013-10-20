@@ -116,15 +116,17 @@ public class Game extends UntypedActor
 
             if(board.allPlayersAreReady())
             {
-				Outbound.Out<Outbound.Start> outStart = new Outbound.Out<Outbound.Start>(new Outbound.Start());
-				Date now = new Date();
+                Outbound.Out<Outbound.Start> outStart = new Outbound.Out<Outbound.Start>(new Outbound.Start());
+                Date now = new Date();
 
-			    board.start(now);
-				outStart.setTime(now);
+                board.start(now);
+                outStart.setTime(now);
+
                 outStart.getMessage().setSizeX(board.getSizeX());
                 outStart.getMessage().setSizeY(board.getSizeY());
+                outStart.getMessage().setPlayers(board.getPlayers().values());
 
-				broadcast(outStart);
+                broadcast(outStart);
             }
 		}
 		else if (message instanceof Inbound.Tick)
@@ -158,8 +160,11 @@ public class Game extends UntypedActor
 		}
 		else if (message instanceof Inbound.Direction)
 		{
-			Inbound.Direction inDirection = (Inbound.Direction) message;
-			Outbound.Out<Outbound.Direction> outDirection = new Outbound.Out<Outbound.Direction>(new Outbound.Direction());
+            if (!player.isAlive())
+                return;
+
+            Inbound.Direction inDirection = (Inbound.Direction) message;
+            Outbound.Out<Outbound.Direction> outDirection = new Outbound.Out<Outbound.Direction>(new Outbound.Direction());
 
             Collidable part = player.flush(board.extrapolate(player, inDirection.getTime()));
 			outDirection.getMessage().setPart(part);

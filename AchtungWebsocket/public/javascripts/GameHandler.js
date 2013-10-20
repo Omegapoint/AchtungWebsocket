@@ -254,7 +254,7 @@ GameHandler.prototype.doReady = function(id)
 
 GameHandler.prototype.onReady = function(message)
 {
-    this.context.canvas.width = message.sizeX;
+     this.context.canvas.width = message.sizeX;
      this.context.canvas.height = message.sizeY;
 };
 
@@ -267,6 +267,11 @@ GameHandler.prototype.onStart = function(message, id, time)
     console.log(window.innerHeight + " = " + message.sizeY);
 
     var self = this;
+
+    for (var i in message.players)
+    {
+        this.findPlayer(message.players[i]).update(message.players[i], null, time);
+    }
 
     window.onkeyup = function(event)
     {
@@ -294,6 +299,7 @@ GameHandler.prototype.onDeath = function(message)
     for (var i in message.players)
     {
         this.findPlayer(message.players[i]).alive = false;
+        this.findPlayer(message.players[i]).arcs.clear();
     }
 
 };

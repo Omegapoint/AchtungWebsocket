@@ -27,12 +27,14 @@ public class Player
 	private Integer direction;
 	private List<Collidable> parts;
     private boolean ready;
+    private boolean alive;
 
 	public Player(String name)
 	{
 		this.name = name;
 		this.color = PLAYER_COLOR[PLAYER_INDEX % PLAYER_COLOR.length];
 		this.direction = 0;
+        this.alive = true;
 		this.parts = new ArrayList<Collidable>();
 
 		PLAYER_INDEX++;
@@ -143,6 +145,16 @@ public class Player
         this.ready = ready;
     }
 
+    public boolean isAlive()
+    {
+        return this.alive;
+    }
+
+    public void setAlive(boolean alive)
+    {
+        this.alive = alive;
+    }
+
 	@Transient
 	public List<Collidable> getParts()
 	{
@@ -160,6 +172,11 @@ public class Player
 			throw new IllegalArgumentException("Can only add Line or Arc to part list.");
 		}
 	}
+
+    public void clearParts()
+    {
+        parts.clear();
+    }
 
     public void teleport()
     {

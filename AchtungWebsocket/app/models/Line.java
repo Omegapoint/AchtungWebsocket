@@ -72,7 +72,7 @@ public class Line implements Collidable
 	
 	public boolean isCollision(Double x, Double y, Date now)
 	{
-        final Integer timeThreshold = 1000;
+        final Integer timeThreshold = 200;
         final Double distanceThreshold = 6.0;
 
         if (now.getTime() - created.getTime() < timeThreshold)
