@@ -59,16 +59,10 @@ GameHandler.prototype.drawPlayers = function()
     {
         var player = this.players[i];
 
-        if (!player.alive)
-        {
-            continue;
-        }
-
         var ctx = this.context;
         ctx.fillStyle = player.color;
         ctx.strokeStyle = player.color;
         ctx.lineWidth=4;
-
 
         player.arcs.forEach(function(arc) {
             if(arc.hasOwnProperty("as")) {
@@ -84,6 +78,9 @@ GameHandler.prototype.drawPlayers = function()
                 ctx.closePath();
             }
         });
+
+        if (!player.alive)
+            continue;
 
         var position = this.calculatePosition(player);
         if(player.direction === 0) {
@@ -299,7 +296,7 @@ GameHandler.prototype.onDeath = function(message)
     for (var i in message.players)
     {
         this.findPlayer(message.players[i]).alive = false;
-        this.findPlayer(message.players[i]).arcs.clear();
+        // this.findPlayer(message.players[i]).arcs.clear();
     }
 
 };

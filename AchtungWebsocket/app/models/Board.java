@@ -139,7 +139,7 @@ public class Board
 				if (collidable.isCollision(state.getX(), state.getY(), time))
 				{
                     player.setAlive(false);
-                    player.clearParts();
+                    //player.clearParts();
                     deadPlayers.add(player);
 
                     System.out.println("Player " + player.getName() + "died.");
